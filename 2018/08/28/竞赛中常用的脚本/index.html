@@ -58,8 +58,6 @@
 					
 						<li><a href="/archives">Archives</a></li>
 					
-						<li><a href="/about">About</a></li>
-					
 					<li>
  					
 					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
@@ -198,12 +196,16 @@
 </div>  
       <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
 
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ssh连接脚本"><span class="toc-number">1.</span> <span class="toc-text">ssh连接脚本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#python与msf交互脚本"><span class="toc-number">2.</span> <span class="toc-text">python与msf交互脚本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ssh爆破脚本"><span class="toc-number">3.</span> <span class="toc-text">ssh爆破脚本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ftp匿名登陆"><span class="toc-number">4.</span> <span class="toc-text">ftp匿名登陆</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#php不死马"><span class="toc-number">5.</span> <span class="toc-text">php不死马</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#杀进程"><span class="toc-number">6.</span> <span class="toc-text">杀进程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#常见编码反转脚本"><span class="toc-number">7.</span> <span class="toc-text">常见编码反转脚本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#php反弹shell"><span class="toc-number">8.</span> <span class="toc-text">php反弹shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PHP反弹shell"><span class="toc-number">9.</span> <span class="toc-text">PHP反弹shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#python-反弹shell"><span class="toc-number">10.</span> <span class="toc-text">python 反弹shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jsp反弹shell"><span class="toc-number">11.</span> <span class="toc-text">jsp反弹shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#php写入一句话木马"><span class="toc-number">12.</span> <span class="toc-text">php写入一句话木马</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#xor"><span class="toc-number">13.</span> <span class="toc-text">xor</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#js端口扫描"><span class="toc-number">14.</span> <span class="toc-text">js端口扫描</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#python代理脚本python2"><span class="toc-number">15.</span> <span class="toc-text">python代理脚本python2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一句话木马限制IP版本"><span class="toc-number">16.</span> <span class="toc-text">一句话木马限制IP版本</span></a></li></ol>
+ 
+  </div>
+
 <div id="asidepart">
 <div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
 <aside class="clearfix">
-
-  
-
 
   
 
@@ -273,6 +275,10 @@
 			
 		
 			
+				<li><a href="/tags/access/" title="access">access<sup>1</sup></a></li>
+			
+		
+			
 				<li><a href="/tags/web漏洞/" title="web漏洞">web漏洞<sup>1</sup></a></li>
 			
 		
@@ -281,11 +287,7 @@
 			
 		
 			
-				<li><a href="/tags/access/" title="access">access<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/靶机/" title="靶机">靶机<sup>1</sup></a></li>
+				<li><a href="/tags/变量覆盖/" title="变量覆盖">变量覆盖<sup>1</sup></a></li>
 			
 		
 			
@@ -342,16 +344,6 @@
   
 
 
-  <div class="rsspart">
-	<a href target="_blank" title="rss">RSS</a>
-</div>
-
-  <div class="weiboshow">
-  <p class="asidetitle">Weibo</p>
-    <iframe width="100%" height="119" class="share_self" frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=&verifier=b3593ceb&dpc=1"></iframe>
-</div>
-
-
 </aside>
 </div>
     </div>
@@ -363,9 +355,15 @@
 	</div>
 	
 	
+	<section class="info">
+		<p> 欢迎来到我的博客 <br>
+			请在友情链接里订阅我的频道</p>
+	</section>
+	 
 	<div class="social-font">
 		
 		
+		<a href="https://github.com/heavenlyvip" target="_blank" class="icon-github" title="github"></a>
 		
 		
 		
@@ -373,6 +371,9 @@
 		
 		
 		
+		
+		
+		<a href="mailto:duwentao.dwt@qq.com" target="_blank" class="icon-email" title="Email Me"></a>
 		
 	</div>
 			
@@ -431,6 +432,8 @@ $(document).ready(function(){
       m.removeClass('moveMain');
       a.css('display', 'block').removeClass('fadeOut');
       o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
         
     }
   });
