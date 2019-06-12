@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>ssh隧道转发 | D&#39;Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负">
+<meta name="keywords" content="ssh,内网渗透">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ssh隧道转发">
+<meta property="og:url" content="http://www.duwentao.top/2018/09/11/ssh隧道转发/index.html">
+<meta property="og:site_name" content="D&#39;Blog">
+<meta property="og:description" content="声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.duwentao.top/images/ssh%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91/image-20180911141552548.png">
+<meta property="og:image" content="http://www.duwentao.top/images/ssh%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91/image-20180911141830414.png">
+<meta property="og:updated_time" content="2019-01-06T13:11:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ssh隧道转发">
+<meta name="twitter:description" content="声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负">
+<meta name="twitter:image" content="http://www.duwentao.top/images/ssh%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91/image-20180911141552548.png">
+  
+    <link rel="alternate" href="/atom.xml" title="D&#39;Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">D&#39;Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.duwentao.top"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ssh隧道转发" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/09/11/ssh隧道转发/" class="article-date">
+  <time datetime="2018-09-10T16:00:00.000Z" itemprop="datePublished">2018-09-11</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ssh隧道转发
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <html><body style="padding: 20px;"><marquee><span style="font-weight: bolder;font-size: 20px;color: red;"><a href="https://www.youtube.com/channel/UCiO_qNDegcpV4cUhkFc22lA?view_as=subscriber" target="_blank" rel="noopener"><font color="red">声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负</font></a></span></marquee></body></html>
+
+
+
+<a id="more"></a>
+
+<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><table>
+<thead>
+<tr>
+<th align="center"></th>
+<th align="center">ip1</th>
+<th align="center">ip2</th>
+<th align="center">服务</th>
+<th align="center">root密码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">第一层（A）</td>
+<td align="center">172.24.10.106</td>
+<td align="center"></td>
+<td align="center">80http服务</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">第二层（B）</td>
+<td align="center">172.24.10.185</td>
+<td align="center">172.24.11.129</td>
+<td align="center">80http服务</td>
+<td align="center">123456</td>
+</tr>
+<tr>
+<td align="center">第三层（C）</td>
+<td align="center"></td>
+<td align="center">172.24.11.128</td>
+<td align="center">80http服务</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">真实机（D）</td>
+<td align="center">172.24.10.1</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<p>​    网络状态：同网段的通，不同网段的不通信。</p>
+<h2 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h2><p>​    让A和D能够访问C上的80服务。</p>
+<h2 id="开始实施"><a href="#开始实施" class="headerlink" title="开始实施"></a>开始实施</h2><h3 id="首先认识三条强大的命令"><a href="#首先认识三条强大的命令" class="headerlink" title="首先认识三条强大的命令"></a>首先认识三条强大的命令</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ssh -C -f -N -g -L listen_port:DST_Host:DST_port user@Tunnel_Host </span><br><span class="line">ssh -C -f -N -g -R listen_port:DST_Host:DST_port user@Tunnel_Host </span><br><span class="line">ssh -C -f -N -g -D listen_port user@Tunnel_Host</span><br></pre></td></tr></table></figure>
+
+<h3 id="参数解释"><a href="#参数解释" class="headerlink" title="参数解释"></a>参数解释</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-f  Fork into background after authentication. </span><br><span class="line">	后台认证用户/密码，通常和-N连用，不用登录到远程主机。</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-L port:host:hostport </span><br><span class="line">	将本地机(客户机)的某个端口转发到远端指定机器的指定端口. </span><br><span class="line">	工作原理是这样的, 本地机器上分配了一个 socket 侦听 port 端口, 一旦这个端口上有了连接, 该连接就经过安全通道转发出去, 同时远程主机和 host 的 hostport 端口建立连接. 可以在配置文件中指定端口的转发. 只有 root 才能转发特权端口. IPv6 地址用另一种格式说明: port/host/hostport</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-R port:host:hostport </span><br><span class="line">	将远程主机(服务器)的某个端口转发到本地端指定机器的指定端口. 工作原理是这样的, 远程主机上分配了一个 socket 侦听 port 端口, 一旦这个端口上有了连接, 该连接就经过安全通道转向出去, 同时本地主机和 host 的 hostport 端口建立连接. 可以在配置文件中指定端口的转发. 只有用 root 登录远程主机才能转发特权端口. IPv6 地址用另一种格式说明: port/host/hostport</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-D port </span><br><span class="line">	指定一个本地机器 “动态的’’ 应用程序端口转发. 工作原理是这样的, 本地机器上分配了一个 socket 侦听 port 端口, 一旦这个端口上有了连接, 该连接就经过安全通道转发出去, 根据应用程序的协议可以判断出远程主机将和哪里连接. 目前支持 SOCKS4 协议, 将充当 SOCKS4 服务器. 只有 root 才能转发特权端口. 可以在配置文件中指定动态端口的转发.</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-C Enable compression. </span><br><span class="line">	压缩数据传输。</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-N Do not execute a shell or <span class="built_in">command</span>. </span><br><span class="line">	不执行脚本或命令，通常与-f连用。</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-g Allow remote hosts to connect to forwarded ports. </span><br><span class="line">在-L/-R/-D参数中，允许远程主机连接到建立的转发的端口，如果不加这个参数，只允许本地主机建立连接。注：这个参数我在实践中似乎始终不起作用。</span><br></pre></td></tr></table></figure>
+
+<h3 id="开始操作"><a href="#开始操作" class="headerlink" title="开始操作"></a>开始操作</h3><p>在第二台靶机上执行，</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssh -N -f -L 77:172.24.11.128:80 172.24.10.185</span><br><span class="line">curl http://localhost:77 <span class="comment"># 现在访问本地77端口，就可以访问172.24.11.128的80端口了</span></span><br></pre></td></tr></table></figure>
+
+<p>​    这种只能用127.0.0.1进行访问，我们用netstat  -ntl 可以查看，77号端口监听的是127.0.0.1，而不是0.0.0.0</p>
+<p>​    要想不用127进行限制可以用ssh开启一个socks5.在第二台靶机上执行，ip为第二台靶机的ip</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssh -N -f -D 66  172.24.10.185 将端口绑定在127.0.0.1上</span><br><span class="line">ssh -N -f -D 0.0.0.0:66 172.24.10.185 <span class="comment"># 将端口绑定在0.0.0.0上</span></span><br></pre></td></tr></table></figure>
+
+<p>​    设置完成后用netstat -ntl看下，66号端口是不是绑定到0.0.0.0上了。</p>
+<p>​    接下来本地设置代理</p>
+<p><img src="/../images/ssh%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91/image-20180911141552548.png" alt="image-20180911141552548"></p>
+<p>​    成功访问</p>
+<p><img src="/../images/ssh%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91/image-20180911141830414.png" alt="image-20180911141830414"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.duwentao.top/2018/09/11/ssh隧道转发/" data-id="cjwsmhkv4000qdkfyybp3bc1l" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ssh/">ssh</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/内网渗透/">内网渗透</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/10/23/自考c++常见改错/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          自考c++常见改错
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/09/10/自考c++编程练习题/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">自考c++编程练习题</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF/">CTF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/access/">access</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ctf/">ctf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/node-js/">node.js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php反序列化漏洞/">php反序列化漏洞</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pwn/">pwn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql注入/">sql注入</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssrf/">ssrf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vps/">vps</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-靶机/">web-靶机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-sql-injection/">web_sql_injection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-upload-include/">web_upload_include</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web安全/">web安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web漏洞/">web漏洞</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xxe/">xxe</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/二进制安全/">二进制安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内网渗透/">内网渗透</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/博客/">博客</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/变量覆盖/">变量覆盖</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/支付漏洞/">支付漏洞</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件上传/">文件上传</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件包含漏洞/">文件包含漏洞</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/栈/">栈</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/私有云/">私有云</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/竞赛/">竞赛</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/脚本/">脚本</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/自考/">自考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/逻辑漏洞/">逻辑漏洞</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/队列/">队列</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/靶机/">靶机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/靶机渗透/">靶机渗透</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/CTF/" style="font-size: 12px;">CTF</a> <a href="/tags/access/" style="font-size: 10px;">access</a> <a href="/tags/c/" style="font-size: 14px;">c++</a> <a href="/tags/ctf/" style="font-size: 12px;">ctf</a> <a href="/tags/mysql/" style="font-size: 16px;">mysql</a> <a href="/tags/node-js/" style="font-size: 10px;">node.js</a> <a href="/tags/php/" style="font-size: 12px;">php</a> <a href="/tags/php反序列化漏洞/" style="font-size: 10px;">php反序列化漏洞</a> <a href="/tags/pwn/" style="font-size: 10px;">pwn</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/sql注入/" style="font-size: 18px;">sql注入</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/ssrf/" style="font-size: 10px;">ssrf</a> <a href="/tags/vps/" style="font-size: 10px;">vps</a> <a href="/tags/web-靶机/" style="font-size: 12px;">web-靶机</a> <a href="/tags/web-sql-injection/" style="font-size: 10px;">web_sql_injection</a> <a href="/tags/web-upload-include/" style="font-size: 10px;">web_upload_include</a> <a href="/tags/web安全/" style="font-size: 20px;">web安全</a> <a href="/tags/web漏洞/" style="font-size: 10px;">web漏洞</a> <a href="/tags/xxe/" style="font-size: 10px;">xxe</a> <a href="/tags/二进制安全/" style="font-size: 10px;">二进制安全</a> <a href="/tags/内网渗透/" style="font-size: 10px;">内网渗透</a> <a href="/tags/博客/" style="font-size: 10px;">博客</a> <a href="/tags/变量覆盖/" style="font-size: 10px;">变量覆盖</a> <a href="/tags/支付漏洞/" style="font-size: 10px;">支付漏洞</a> <a href="/tags/数据结构/" style="font-size: 12px;">数据结构</a> <a href="/tags/文件上传/" style="font-size: 10px;">文件上传</a> <a href="/tags/文件包含漏洞/" style="font-size: 10px;">文件包含漏洞</a> <a href="/tags/栈/" style="font-size: 10px;">栈</a> <a href="/tags/私有云/" style="font-size: 10px;">私有云</a> <a href="/tags/竞赛/" style="font-size: 10px;">竞赛</a> <a href="/tags/脚本/" style="font-size: 10px;">脚本</a> <a href="/tags/自考/" style="font-size: 14px;">自考</a> <a href="/tags/逻辑漏洞/" style="font-size: 10px;">逻辑漏洞</a> <a href="/tags/队列/" style="font-size: 10px;">队列</a> <a href="/tags/靶机/" style="font-size: 10px;">靶机</a> <a href="/tags/靶机渗透/" style="font-size: 12px;">靶机渗透</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/05/29/pwn学习01/">01,pwn学习系列</a>
+          </li>
+        
+          <li>
+            <a href="/2019/05/13/xxe总结/">xxe总结</a>
+          </li>
+        
+          <li>
+            <a href="/2019/05/09/PHP变量覆盖漏洞总结/">PHP变量覆盖总结</a>
+          </li>
+        
+          <li>
+            <a href="/2019/04/21/php反序列化漏洞/">php反序列化漏洞</a>
+          </li>
+        
+          <li>
+            <a href="/2019/04/20/文件包含漏洞总结/">文件包含漏洞总结</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 杜文涛<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

