@@ -1,0 +1,320 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>二进制学习笔记二之裸函数 | Ambb1&#39;Blog</title>
+  <meta name="author" content="D">
+
+  
+  <meta name="description" content="marquee
+    
+
+
+    
+        
+        marquee
+    
+
+    声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负">
+  
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="二进制学习笔记二之裸函数">
+  <meta property="og:site_name" content="Ambb1&#39;Blog">
+
+  <meta name="google-site-verification" content="IYRjS_ZQ5oWdxEbMPb6RbJtjrWLrWaHwQItM7zyq8fc">
+  
+
+  
+    <meta property="og:image" content>
+  
+
+  
+  <link href="/css/images/favicon.ico" rel="icon">
+  
+
+  <link rel="alternate" href="/atom.xml" title="Ambb1&#39;Blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+
+  <!-- baidu webmaster push -->
+  <script src="//push.zhanzhang.baidu.com/push.js"></script>
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Ambb1&#39;Blog</a></h1>
+  <h2><a href="/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/1995/09/15/导航/">导航</a></li>
+    
+      <li><a href="https://xz.aliyun.com/u/14095">先知社区</a></li>
+    
+      <li><a href="https://study.163.com/instructor/1022621647.htm?_trace_c_p_k2_=5639bc1aaace45be83f70ec7b227ccdf">网易云课堂</a></li>
+    
+      <li><a href="https://space.bilibili.com/95249482">B站</a></li>
+    
+      <li><a href="https://qm.qq.com/cgi-bin/qm/qr?k=s-TbazDtthvriuYsd3WK-Wt1xK-mYyXX&authKey=u7NGkNkFpAVS4Wfuc5QKCdUxPL4on%2FwmD85DzmVqWw2DO4EWhoFMdB6Gf2TQWTWs">QQ群</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-08-19T16:00:00.000Z"><a href="/2019/08/20/二进制学习笔记之裸函数/">2019-08-20</a></time>
+      
+      
+  
+    <h1 class="title">二进制学习笔记二之裸函数</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <!DOCTYPE html>
+<html>
+    <head><meta name="generator" content="Hexo 3.8.0">
+        <meta charset="UTF-8">
+        <title>marquee</title>
+    </head>
+<!DOCTYPE html>
+<html>
+    <head><meta name="generator" content="Hexo 3.8.0">
+        <meta charset="UTF-8">
+        <title>marquee</title>
+    </head>
+<body style="padding: 20px;">
+    <marquee><span style="font-weight: bolder;font-size: 20px;color: red;"><a href="https://space.bilibili.com/95249482" target="_blank" rel="noopener"><font color="red">声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负</font></a></span></marquee>
+</body>
+
+
+
+<a id="more"></a>
+
+
+
+<h1 id="问题1：用裸函数实现下面函数的功能"><a href="#问题1：用裸函数实现下面函数的功能" class="headerlink" title="问题1：用裸函数实现下面函数的功能"></a>问题1：用裸函数实现下面函数的功能</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">int plus(int x,int y,int z)			</span><br><span class="line">&#123;			</span><br><span class="line">	int a = 2;		</span><br><span class="line">	int b = 3;		</span><br><span class="line">	int c = 4;		</span><br><span class="line">	return x+y+z+a+b+c;		</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>vc6.0的程序</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;stdio.h&gt;</span><br><span class="line">//#include &quot;stdafx.h&quot;</span><br><span class="line"></span><br><span class="line">//裸函数</span><br><span class="line">int _declspec(naked)Function(int x,int y,int z)</span><br><span class="line">&#123;</span><br><span class="line">/*</span><br><span class="line">	int plus(int x,int y,int z)			</span><br><span class="line">	&#123;			</span><br><span class="line">		int a = 2;		</span><br><span class="line">		int b = 3;		</span><br><span class="line">		int c = 4;		</span><br><span class="line">		return x+y+z+a+b+c;		</span><br><span class="line">	&#125;			</span><br><span class="line"></span><br><span class="line">*/</span><br><span class="line"></span><br><span class="line">	_asm&#123;</span><br><span class="line">		//保存原来栈底</span><br><span class="line">		push ebp</span><br><span class="line">		//提升堆栈</span><br><span class="line">		mov ebp,esp</span><br><span class="line">		sub esp,0x40</span><br><span class="line">		//保存现场</span><br><span class="line">		push edi</span><br><span class="line">		push esi</span><br><span class="line">		push ebx</span><br><span class="line">		//填充数据</span><br><span class="line">		//int 3</span><br><span class="line">		mov eax,0xCCCCCCCC</span><br><span class="line">		mov ecx,0x10</span><br><span class="line">		lea edi,dword ptr ds:[ebp-0x40]</span><br><span class="line">		rep stosd</span><br><span class="line">		//该方法真正要执行的功能</span><br><span class="line"></span><br><span class="line">		//局部变量从ebp-4开始，参数从ebp+8的位置开始的</span><br><span class="line">		mov dword ptr ds:[ebp-0x4],2</span><br><span class="line">		mov dword ptr ds:[ebp-0x8],3</span><br><span class="line">		mov dword ptr ds:[ebp-0xC],4</span><br><span class="line"></span><br><span class="line">		mov eax,dword ptr ds:[ebp+0x8]</span><br><span class="line">		add eax,dword ptr ds:[ebp+0xC]</span><br><span class="line">		add eax,dword ptr ds:[ebp+0x10]</span><br><span class="line">	    add eax,dword ptr ds:[ebp-0x4]</span><br><span class="line">		add eax,dword ptr ds:[ebp-0x8]</span><br><span class="line">		add eax,dword ptr ds:[ebp-0xC]</span><br><span class="line">		//恢复现场</span><br><span class="line"></span><br><span class="line">		pop ebx</span><br><span class="line">		pop esi</span><br><span class="line">		pop edi</span><br><span class="line"></span><br><span class="line">		//恢复堆栈</span><br><span class="line">		mov esp,ebp</span><br><span class="line">		pop ebp	</span><br><span class="line">	 	ret</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//程序入口</span><br><span class="line">int main(int argc,char * argv[])</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">	Function(1,2,3);</span><br><span class="line">	return 0;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在vc6.0里按下F7在按F5，然后进入反汇编，可以看到Function开始的地址是0x004010A8</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">76:       Function(1,2,3);</span><br><span class="line">004010A8   push        3</span><br><span class="line">004010AA   push        2</span><br><span class="line">004010AC   push        1</span><br><span class="line">004010AE   call        @ILT+5(Function) (0040100a)</span><br><span class="line">004010B3   add         esp,0Ch</span><br><span class="line">77:       return 0;</span><br><span class="line">004010B6   xor         eax,eax</span><br><span class="line">78:</span><br><span class="line">79:   &#125;</span><br><span class="line">004010B8   pop         edi</span><br><span class="line">004010B9   pop         esi</span><br><span class="line">004010BA   pop         ebx</span><br><span class="line">004010BB   add         esp,40h</span><br><span class="line">004010BE   cmp         ebp,esp</span><br><span class="line">004010C0   call        __chkesp (00401160)</span><br><span class="line">004010C5   mov         esp,ebp</span><br><span class="line">004010C7   pop         ebp</span><br><span class="line">004010C8   ret</span><br><span class="line">--- No source file  ---------------------------------------------------------------------------------------------------------------------------------------------------------</span><br><span class="line">004010C9   int         3</span><br><span class="line">004010CA   int         3</span><br><span class="line">004010CB   int         3</span><br><span class="line">004010CC   int         3</span><br><span class="line">004010CD   int         3</span><br><span class="line">004010CE   int         3</span><br><span class="line">004010CF   int         3</span><br><span class="line">004010D0   int         3</span><br><span class="line">004010D1   int         3</span><br><span class="line">004010D2   int         3</span><br><span class="line">004010D3   int         3</span><br><span class="line">004010D4   int         3</span><br><span class="line">004010D5   int         3</span><br><span class="line">004010D6   int         3</span><br><span class="line">004010D7   int         3</span><br><span class="line">004010D8   int         3</span><br><span class="line">004010D9   int         3</span><br><span class="line">004010DA   int         3</span><br><span class="line">004010DB   int         3</span><br><span class="line">004010DC   int         3</span><br><span class="line">004010DD   int         3</span><br></pre></td></tr></table></figure>
+
+<p>把此exe程序放到DTDebug里</p>
+<p><img src="/../images/%E9%80%86%E5%90%91%E5%AD%A6%E4%B9%A0/20190820/image-20190820170657531.png" alt="image-20190820170657531"></p>
+<p>按下F2 下断点，</p>
+<p>按F8和F7进行进入函数进行查看，运算完以后EAX是F即十进制的15</p>
+<p><img src="/../images/%E9%80%86%E5%90%91%E5%AD%A6%E4%B9%A0/20190820/image-20190820170923172.png" alt="image-20190820170923172"></p>
+</html></html>
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href='javascript:void(0)' class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/二进制学习-裸函数/">-二进制学习 -裸函数</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:www.ambb1.top">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/08/20/二进制学习笔记之裸函数/">二进制学习笔记二之裸函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/08/14/二进制学习工具问题集/">二进制学习工具问题集</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/29/pwn学习01/">01,pwn学习系列</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/13/xxe总结/">xxe总结</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/09/PHP变量覆盖漏洞总结/">PHP变量覆盖总结</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">Tags</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/二进制学习-裸函数/">-二进制学习 -裸函数</a><small>1</small></li>
+  
+    <li><a href="/tags/CTF/">CTF</a><small>2</small></li>
+  
+    <li><a href="/tags/access/">access</a><small>1</small></li>
+  
+    <li><a href="/tags/c/">c++</a><small>4</small></li>
+  
+    <li><a href="/tags/ctf/">ctf</a><small>2</small></li>
+  
+    <li><a href="/tags/mysql/">mysql</a><small>6</small></li>
+  
+    <li><a href="/tags/node-js/">node.js</a><small>1</small></li>
+  
+    <li><a href="/tags/php/">php</a><small>2</small></li>
+  
+    <li><a href="/tags/php反序列化漏洞/">php反序列化漏洞</a><small>1</small></li>
+  
+    <li><a href="/tags/pwn/">pwn</a><small>1</small></li>
+  
+    <li><a href="/tags/python/">python</a><small>1</small></li>
+  
+    <li><a href="/tags/sql注入/">sql注入</a><small>7</small></li>
+  
+    <li><a href="/tags/ssh/">ssh</a><small>1</small></li>
+  
+    <li><a href="/tags/ssrf/">ssrf</a><small>1</small></li>
+  
+    <li><a href="/tags/vps/">vps</a><small>1</small></li>
+  
+    <li><a href="/tags/web-靶机/">web-靶机</a><small>2</small></li>
+  
+    <li><a href="/tags/web-sql-injection/">web_sql_injection</a><small>1</small></li>
+  
+    <li><a href="/tags/web-upload-include/">web_upload_include</a><small>1</small></li>
+  
+    <li><a href="/tags/web安全/">web安全</a><small>9</small></li>
+  
+    <li><a href="/tags/web漏洞/">web漏洞</a><small>1</small></li>
+  
+    <li><a href="/tags/xxe/">xxe</a><small>1</small></li>
+  
+    <li><a href="/tags/二进制安全/">二进制安全</a><small>1</small></li>
+  
+    <li><a href="/tags/关于我/">关于我</a><small>2</small></li>
+  
+    <li><a href="/tags/内网渗透/">内网渗透</a><small>1</small></li>
+  
+    <li><a href="/tags/博客/">博客</a><small>1</small></li>
+  
+    <li><a href="/tags/变量覆盖/">变量覆盖</a><small>1</small></li>
+  
+    <li><a href="/tags/导航/">导航</a><small>1</small></li>
+  
+    <li><a href="/tags/支付漏洞/">支付漏洞</a><small>1</small></li>
+  
+    <li><a href="/tags/数据结构/">数据结构</a><small>2</small></li>
+  
+    <li><a href="/tags/文件上传/">文件上传</a><small>1</small></li>
+  
+    <li><a href="/tags/文件包含漏洞/">文件包含漏洞</a><small>1</small></li>
+  
+    <li><a href="/tags/栈/">栈</a><small>1</small></li>
+  
+    <li><a href="/tags/私有云/">私有云</a><small>1</small></li>
+  
+    <li><a href="/tags/竞赛/">竞赛</a><small>1</small></li>
+  
+    <li><a href="/tags/脚本/">脚本</a><small>1</small></li>
+  
+    <li><a href="/tags/自考/">自考</a><small>4</small></li>
+  
+    <li><a href="/tags/逻辑漏洞/">逻辑漏洞</a><small>1</small></li>
+  
+    <li><a href="/tags/队列/">队列</a><small>1</small></li>
+  
+    <li><a href="/tags/靶机/">靶机</a><small>1</small></li>
+  
+    <li><a href="/tags/靶机渗透/">靶机渗透</a><small>2</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">Tag Cloud</h3>
+  <div class="entry">
+    <a href="/tags/二进制学习-裸函数/" style="font-size: 10px;">-二进制学习 -裸函数</a> <a href="/tags/CTF/" style="font-size: 12px;">CTF</a> <a href="/tags/access/" style="font-size: 10px;">access</a> <a href="/tags/c/" style="font-size: 14px;">c++</a> <a href="/tags/ctf/" style="font-size: 12px;">ctf</a> <a href="/tags/mysql/" style="font-size: 16px;">mysql</a> <a href="/tags/node-js/" style="font-size: 10px;">node.js</a> <a href="/tags/php/" style="font-size: 12px;">php</a> <a href="/tags/php反序列化漏洞/" style="font-size: 10px;">php反序列化漏洞</a> <a href="/tags/pwn/" style="font-size: 10px;">pwn</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/sql注入/" style="font-size: 18px;">sql注入</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/ssrf/" style="font-size: 10px;">ssrf</a> <a href="/tags/vps/" style="font-size: 10px;">vps</a> <a href="/tags/web-靶机/" style="font-size: 12px;">web-靶机</a> <a href="/tags/web-sql-injection/" style="font-size: 10px;">web_sql_injection</a> <a href="/tags/web-upload-include/" style="font-size: 10px;">web_upload_include</a> <a href="/tags/web安全/" style="font-size: 20px;">web安全</a> <a href="/tags/web漏洞/" style="font-size: 10px;">web漏洞</a> <a href="/tags/xxe/" style="font-size: 10px;">xxe</a> <a href="/tags/二进制安全/" style="font-size: 10px;">二进制安全</a> <a href="/tags/关于我/" style="font-size: 12px;">关于我</a> <a href="/tags/内网渗透/" style="font-size: 10px;">内网渗透</a> <a href="/tags/博客/" style="font-size: 10px;">博客</a> <a href="/tags/变量覆盖/" style="font-size: 10px;">变量覆盖</a> <a href="/tags/导航/" style="font-size: 10px;">导航</a> <a href="/tags/支付漏洞/" style="font-size: 10px;">支付漏洞</a> <a href="/tags/数据结构/" style="font-size: 12px;">数据结构</a> <a href="/tags/文件上传/" style="font-size: 10px;">文件上传</a> <a href="/tags/文件包含漏洞/" style="font-size: 10px;">文件包含漏洞</a> <a href="/tags/栈/" style="font-size: 10px;">栈</a> <a href="/tags/私有云/" style="font-size: 10px;">私有云</a> <a href="/tags/竞赛/" style="font-size: 10px;">竞赛</a> <a href="/tags/脚本/" style="font-size: 10px;">脚本</a> <a href="/tags/自考/" style="font-size: 14px;">自考</a> <a href="/tags/逻辑漏洞/" style="font-size: 10px;">逻辑漏洞</a> <a href="/tags/队列/" style="font-size: 10px;">队列</a> <a href="/tags/靶机/" style="font-size: 10px;">靶机</a> <a href="/tags/靶机渗透/" style="font-size: 12px;">靶机渗透</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  <p>
+  
+  &copy; 2019 D
+  
+  All rights reserved.</p>
+  <p>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></p>
+</div>
+<div class="clearfix"></div>
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<div id="bg"></div>
+</body>
+</html>
