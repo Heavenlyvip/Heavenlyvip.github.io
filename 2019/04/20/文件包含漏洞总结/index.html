@@ -99,7 +99,7 @@
 <meta property="og:image" content="http://www.ambb1.top/images/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20190419104258161.png">
 <meta property="og:image" content="http://www.ambb1.top/images/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20190419105605921.png">
 <meta property="og:image" content="http://www.ambb1.top/images/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/image-20190419105330644.png">
-<meta property="og:updated_time" content="2019-10-28T00:37:46.000Z">
+<meta property="og:updated_time" content="2020-03-13T01:40:04.581Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="文件包含漏洞总结">
 <meta name="twitter:description" content="声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负">
@@ -494,7 +494,6 @@
 <ol>
 <li>php版本大于等于php5.3.0</li>
 <li>使用zip协议，需要指定绝对路径，同时将<code>#</code>编码为<code>%23</code>，之后填上压缩包内的文件。</li>
-<li>若是使用相对路径，则会包含失败。</li>
 </ol>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://172.24.10.137:8012/?name=zip:///var/www/html/1.zip%231.php</span><br></pre></td></tr></table></figure>
 
