@@ -3,16 +3,18 @@
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="utf-8">
   
-  <title>脚本 | Ambb1&#39;Blog</title>
+  <title>ctf_show上web入门web23的wp | Ambb1&#39;Blog</title>
   <meta name="author" content="ambb1">
 
+  
+  <meta name="description" content="声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负">
   
 
   
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  
+  <meta property="og:title" content="ctf_show上web入门web23的wp">
   <meta property="og:site_name" content="Ambb1&#39;Blog">
 
   <meta name="google-site-verification" content="IYRjS_ZQ5oWdxEbMPb6RbJtjrWLrWaHwQItM7zyq8fc">
@@ -65,25 +67,60 @@
 </nav>
 <div class="clearfix"></div></header>
   <div id="content" class="inner">
-    <div id="main-col" class="alignleft"><div id="wrapper">
-<h2 class="archive-title tag">脚本</h2>
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2020-09-23T16:00:00.000Z"><a href="/2020/09/24/ctf_show上web入门web23的wp/">2020-09-24</a></time>
+      
+      
+  
+    <h1 class="title">ctf_show上web入门web23的wp</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <html><body style="padding: 20px;"><marquee><span style="font-weight: bolder;font-size: 20px;color: red;"><a href="<https://www.youtube.com/channel/UCiO_qNDegcpV4cUhkFc22lA?view_as=subscriber>"><font color="red">声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负</font></a></span></marquee></body></html>
 
 
-  <div class="archive">
+
+<a id="more"></a>
+
+<h2 id="一，平台地址"><a href="#一，平台地址" class="headerlink" title="一，平台地址"></a>一，平台地址</h2><p><a href="http://ctf.show" target="_blank" rel="noopener">http://ctf.show</a></p>
+<p>web入门的web23</p>
+<h1 id="二-题目代码"><a href="#二-题目代码" class="headerlink" title="二,题目代码"></a>二,题目代码</h1><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="comment"># <span class="doctag">@Author</span>: h1xa</span></span><br><span class="line"><span class="comment"># <span class="doctag">@Date</span>:   2020-09-03 11:43:51</span></span><br><span class="line"><span class="comment"># <span class="doctag">@Last</span> Modified by:   h1xa</span></span><br><span class="line"><span class="comment"># <span class="doctag">@Last</span> Modified time: 2020-09-03 11:56:11</span></span><br><span class="line"><span class="comment"># <span class="doctag">@email</span>: h1xa<span class="doctag">@ctfer</span>.com</span></span><br><span class="line"><span class="comment"># <span class="doctag">@link</span>: https://ctfer.com</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">error_reporting(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">include</span>(<span class="string">'flag.php'</span>);</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($_GET[<span class="string">'token'</span>]))&#123;</span><br><span class="line">    $token = md5($_GET[<span class="string">'token'</span>]);</span><br><span class="line">    <span class="keyword">if</span>(substr($token, <span class="number">1</span>,<span class="number">1</span>)===substr($token, <span class="number">14</span>,<span class="number">1</span>) &amp;&amp; substr($token, <span class="number">14</span>,<span class="number">1</span>) ===substr($token, <span class="number">17</span>,<span class="number">1</span>))&#123;</span><br><span class="line">        <span class="keyword">if</span>((intval(substr($token, <span class="number">1</span>,<span class="number">1</span>))+intval(substr($token, <span class="number">14</span>,<span class="number">1</span>))+substr($token, <span class="number">17</span>,<span class="number">1</span>))/substr($token, <span class="number">1</span>,<span class="number">1</span>)===intval(substr($token, <span class="number">31</span>,<span class="number">1</span>)))&#123;</span><br><span class="line">            <span class="keyword">echo</span> $flag;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    highlight_file(<span class="keyword">__FILE__</span>);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="三-wp"><a href="#三-wp" class="headerlink" title="三,wp"></a>三,wp</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># @Author: Ambb1</span></span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">a = <span class="string">"3abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012456789"</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> a:</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> a:</span><br><span class="line">        url = <span class="string">"http://5fcd7816-43ca-46d6-a4c5-63ea74a81dab.chall.ctf.show//?token="</span>+str(i)+str(j)</span><br><span class="line">        req = requests.get(url=url).text</span><br><span class="line">        <span class="keyword">if</span> <span class="string">"flag"</span> <span class="keyword">in</span> req:</span><br><span class="line">            print(req)</span><br><span class="line">            exit()</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            print(url)</span><br><span class="line"></span><br><span class="line"><span class="comment">#token=3i</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="四-视频教程"><a href="#四-视频教程" class="headerlink" title="四,视频教程"></a>四,视频教程</h1><iframe src="//player.bilibili.com/player.html?aid=927142081&bvid=BV1iT4y1A7Gm&cid=238638378&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+
+
+      
+    </div>
     
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2018-08-27T16:00:00.000Z"><a href="/2018/08/28/竞赛中常用的脚本/">2018-08-28</a></time>
-            
-              <h1 class="title"><a href="/2018/08/28/竞赛中常用的脚本/">竞赛中常用的脚本</a></h1>
-            
-          </header>
+    <footer>
+        <div class="alignright">
+          
+          <a href="javascript:void(0)" class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
         </div>
-      </article>
-    
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/ctf/">ctf</a>, <a href="/tags/爆破/">爆破</a>
   </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
 </div></div>
     <aside id="sidebar" class="alignright">
   <div class="search">
