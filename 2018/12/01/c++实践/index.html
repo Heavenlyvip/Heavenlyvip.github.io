@@ -1,0 +1,329 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>c++实践测试 | Ambb1&#39;Blog</title>
+  <meta name="author" content="ambb1">
+
+  
+  <meta name="description" content="声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负">
+  
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="c++实践测试">
+  <meta property="og:site_name" content="Ambb1&#39;Blog">
+
+  <meta name="google-site-verification" content="IYRjS_ZQ5oWdxEbMPb6RbJtjrWLrWaHwQItM7zyq8fc">
+  
+
+  
+    <meta property="og:image" content>
+  
+
+  
+  <link href="/css/images/favicon.ico" rel="icon">
+  
+
+  <link rel="alternate" href="/atom.xml" title="Ambb1&#39;Blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+
+  <!-- baidu webmaster push -->
+  <script src="//push.zhanzhang.baidu.com/push.js"></script>
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Ambb1&#39;Blog</a></h1>
+  <h2><a href="/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/1995/09/15/导航/">导航</a></li>
+    
+      <li><a href="https://xz.aliyun.com/u/14095">先知社区</a></li>
+    
+      <li><a href="https://study.163.com/instructor/1022621647.htm?_trace_c_p_k2_=5639bc1aaace45be83f70ec7b227ccdf">网易云课堂</a></li>
+    
+      <li><a href="https://space.bilibili.com/95249482">B站</a></li>
+    
+      <li><a href="https://qm.qq.com/cgi-bin/qm/qr?k=s-TbazDtthvriuYsd3WK-Wt1xK-mYyXX&authKey=u7NGkNkFpAVS4Wfuc5QKCdUxPL4on%2FwmD85DzmVqWw2DO4EWhoFMdB6Gf2TQWTWs">QQ群</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2018-11-30T16:00:00.000Z"><a href="/2018/12/01/c++实践/">2018-12-01</a></time>
+      
+      
+  
+    <h1 class="title">c++实践测试</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <html><body style="padding: 20px;"><marquee><span style="font-weight: bolder;font-size: 20px;color: red;"><a href="<https://www.youtube.com/channel/UCiO_qNDegcpV4cUhkFc22lA?view_as=subscriber>"><font color="red">声明：本文仅供交流学习使用，严禁利用所学技术违法犯罪，否则后果自负</font></a></span></marquee></body></html>
+
+
+
+<a id="more"></a>
+
+
+
+<h1 id="第一题"><a href="#第一题" class="headerlink" title="第一题"></a>第一题</h1><blockquote>
+<p>  题目：</p>
+<p>   类设计：设计一个点类 Point，包含两个坐标数据成员 x,y 和一个构造函数；再设计一个友元函数area()用于求两点形成的矩形面积</p>
+</blockquote>
+<h2 id="解题："><a href="#解题：" class="headerlink" title="解题："></a>解题：</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"> 环境：</span><br><span class="line">	操作系统：windows10</span><br><span class="line">	编辑器：dev-c++ <span class="number">5.40</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;math.h&gt; </span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span>&#123;</span></span><br><span class="line">	<span class="keyword">private</span>:</span><br><span class="line">		<span class="keyword">int</span> x;</span><br><span class="line">		<span class="keyword">int</span> y;</span><br><span class="line">	<span class="keyword">public</span>:</span><br><span class="line">		Point(<span class="keyword">int</span> x=<span class="number">0</span>,<span class="keyword">int</span> y =<span class="number">0</span>)&#123;</span><br><span class="line">			<span class="keyword">this</span>-&gt;x = x;</span><br><span class="line">			<span class="keyword">this</span>-&gt;y = y;</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="function"><span class="keyword">int</span> <span class="keyword">friend</span> <span class="title">area</span><span class="params">(Point p1 , Point p2)</span></span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="built_in">fabs</span>(p1.x - p2.x)*<span class="built_in">fabs</span>(p1.y - p2.y);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> x1,y1;</span><br><span class="line">	<span class="keyword">int</span> x2,y2;</span><br><span class="line">	<span class="built_in">cout</span>&lt;&lt;<span class="string">"请输入p1的坐标，例子1 1:"</span>&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	<span class="built_in">cin</span>&gt;&gt;x1&gt;&gt;y1; <span class="comment">//接收p1点坐标 </span></span><br><span class="line">	<span class="built_in">cout</span>&lt;&lt;<span class="string">"请输入p2的坐标，例子2 2:"</span>&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	<span class="built_in">cin</span>&gt;&gt;x2&gt;&gt;y2; <span class="comment">//接收p2点坐标 </span></span><br><span class="line">	<span class="function">Point <span class="title">p1</span><span class="params">(x1,y1)</span></span>;</span><br><span class="line">	<span class="function">Point <span class="title">p2</span><span class="params">(x2,y2)</span></span>;</span><br><span class="line">	<span class="built_in">cout</span>&lt;&lt;<span class="string">"矩形面积为："</span>&lt;&lt;area(p1,p2)&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="运行结果截图"><a href="#运行结果截图" class="headerlink" title="运行结果截图"></a>运行结果截图</h3><h4 id="当输入的p1比p2的坐标大时"><a href="#当输入的p1比p2的坐标大时" class="headerlink" title="当输入的p1比p2的坐标大时"></a>当输入的p1比p2的坐标大时</h4><p>​    <img src="/../images/c++/clip_image004.jpg" alt="img"></p>
+<h4 id="当输入的p1比p2的坐标小时"><a href="#当输入的p1比p2的坐标小时" class="headerlink" title="当输入的p1比p2的坐标小时"></a>当输入的p1比p2的坐标小时</h4><p><img src="/../images/c++/clip_image006.jpg" alt="img"></p>
+<h1 id="第二题"><a href="#第二题" class="headerlink" title="第二题"></a>第二题</h1><blockquote>
+<p>题目：</p>
+<p>​    调试下列程序，写出详细的操作步骤，并将运行结果界面插入文档中。</p>
+</blockquote>
+<p>程序：</p>
+<p><img src="/../images/c++/clip_image007.png" alt="img"></p>
+<h2 id="解题：-1"><a href="#解题：-1" class="headerlink" title="解题："></a>解题：</h2><h3 id="1，-环境准备"><a href="#1，-环境准备" class="headerlink" title="1，     环境准备"></a>1，     环境准备</h3><p> 操作系统：windows10专业版</p>
+<p> 编辑器：dev c++ 5.40版本</p>
+<h3 id="2，-新建项目"><a href="#2，-新建项目" class="headerlink" title="2，     新建项目"></a>2，     新建项目</h3><p><img src="/../images/c++/clip_image008.png" alt="img"></p>
+<h3 id="3，-将代码粘贴-项目里"><a href="#3，-将代码粘贴-项目里" class="headerlink" title="3，     将代码粘贴 项目里"></a>3，     将代码粘贴 项目里</h3><p> <img src="/../images/c++/clip_image009.png" alt="img"></p>
+<h3 id="4，-点击左侧“7”的位置进行下断点"><a href="#4，-点击左侧“7”的位置进行下断点" class="headerlink" title="4，     点击左侧“7”的位置进行下断点"></a>4，     点击左侧“7”的位置进行下断点</h3><p><img src="/../images/c++/clip_image010.png" alt="img"></p>
+<h3 id="5，-在左侧添加查看，变量输入变量名s1和s2"><a href="#5，-在左侧添加查看，变量输入变量名s1和s2" class="headerlink" title="5，     在左侧添加查看，变量输入变量名s1和s2"></a>5，     在左侧添加查看，变量输入变量名s1和s2</h3><p><img src="/../images/c++/clip_image011.png" alt="img"></p>
+<p><img src="/../images/c++/clip_image012.png" alt="img"></p>
+<p><img src="/../images/c++/clip_image013.png" alt="img"></p>
+<p><img src="/../images/c++/clip_image014.png" alt="img"></p>
+<h3 id="6，-点击调试或者按下f5开始调试"><a href="#6，-点击调试或者按下f5开始调试" class="headerlink" title="6，     点击调试或者按下f5开始调试"></a>6，     点击调试或者按下f5开始调试</h3><p><img src="/../images/c++/clip_image016.jpg" alt="img"></p>
+<h3 id="7，-在1区是变量的地址和值，2区是程序代码，3区是windows程序执行情况，4区是调试窗口"><a href="#7，-在1区是变量的地址和值，2区是程序代码，3区是windows程序执行情况，4区是调试窗口" class="headerlink" title="7，     在1区是变量的地址和值，2区是程序代码，3区是windows程序执行情况，4区是调试窗口"></a>7，     在1区是变量的地址和值，2区是程序代码，3区是windows程序执行情况，4区是调试窗口</h3><p><img src="/../images/c++/clip_image018.jpg" alt="img"></p>
+<h3 id="8，-点击4区的下一步，可以看到s1有值，s2还未被赋值，符合预期"><a href="#8，-点击4区的下一步，可以看到s1有值，s2还未被赋值，符合预期" class="headerlink" title="8，     点击4区的下一步，可以看到s1有值，s2还未被赋值，符合预期"></a>8，     点击4区的下一步，可以看到s1有值，s2还未被赋值，符合预期</h3><p><img src="/../images/c++/clip_image020.jpg" alt="img"></p>
+<h3 id="9，-继续点击下一步，可以看到s2被赋值，复合预期"><a href="#9，-继续点击下一步，可以看到s2被赋值，复合预期" class="headerlink" title="9，     继续点击下一步，可以看到s2被赋值，复合预期"></a>9，     继续点击下一步，可以看到s2被赋值，复合预期</h3><p><img src="/../images/c++/clip_image022.jpg" alt="img"></p>
+<h3 id="10，-继续下一步，可以看到windows窗口已经打印出来s1的值，复合预期"><a href="#10，-继续下一步，可以看到windows窗口已经打印出来s1的值，复合预期" class="headerlink" title="10，   继续下一步，可以看到windows窗口已经打印出来s1的值，复合预期"></a>10，   继续下一步，可以看到windows窗口已经打印出来s1的值，复合预期</h3><p> <img src="/../images/c++/clip_image024.jpg" alt="img"></p>
+<h3 id="11，-继续执行下一步，输出s2的长度为10，符合预期"><a href="#11，-继续执行下一步，输出s2的长度为10，符合预期" class="headerlink" title="11，   继续执行下一步，输出s2的长度为10，符合预期"></a>11，   继续执行下一步，输出s2的长度为10，符合预期</h3><p><img src="/../images/c++/clip_image026.jpg" alt="img"></p>
+<h3 id="12，-继续执行下一步，比较s1和s2的大小，因为s1比s2大，所以进入了else分支"><a href="#12，-继续执行下一步，比较s1和s2的大小，因为s1比s2大，所以进入了else分支" class="headerlink" title="12，   继续执行下一步，比较s1和s2的大小，因为s1比s2大，所以进入了else分支"></a>12，   继续执行下一步，比较s1和s2的大小，因为s1比s2大，所以进入了else分支</h3><p><img src="/../images/c++/clip_image028.jpg" alt="img"></p>
+<h3 id="13，-继续执行下一步，输出else里的s2的值"><a href="#13，-继续执行下一步，输出else里的s2的值" class="headerlink" title="13，   继续执行下一步，输出else里的s2的值"></a>13，   继续执行下一步，输出else里的s2的值</h3><p><img src="/../images/c++/clip_image030.jpg" alt="img"></p>
+<h3 id="14，-继续执行下一步，s1-s2；可以发现s1的值发生变化，符合预期"><a href="#14，-继续执行下一步，s1-s2；可以发现s1的值发生变化，符合预期" class="headerlink" title="14，   继续执行下一步，s1+=s2；可以发现s1的值发生变化，符合预期"></a>14，   继续执行下一步，s1+=s2；可以发现s1的值发生变化，符合预期</h3><p><img src="/../images/c++/clip_image032.jpg" alt="img"></p>
+<h3 id="15，-继续执行下一步，输出累加后的s1的结果"><a href="#15，-继续执行下一步，输出累加后的s1的结果" class="headerlink" title="15，   继续执行下一步，输出累加后的s1的结果"></a>15，   继续执行下一步，输出累加后的s1的结果</h3><p><img src="/../images/c++/clip_image034.jpg" alt="img"></p>
+<h3 id="16，-继续执行下一步，输出s1的长度，符合预期"><a href="#16，-继续执行下一步，输出s1的长度，符合预期" class="headerlink" title="16，   继续执行下一步，输出s1的长度，符合预期"></a>16，   继续执行下一步，输出s1的长度，符合预期</h3><p><img src="/../images/c++/clip_image036.jpg" alt="img"></p>
+<h3 id="17，-下一步，程序运行完毕"><a href="#17，-下一步，程序运行完毕" class="headerlink" title="17，   下一步，程序运行完毕"></a>17，   下一步，程序运行完毕</h3><p><img src="/../images/c++/clip_image038.jpg" alt="img"></p>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="javascript:void(0)" class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/c/">c++</a>
+  </div>
+
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:www.ambb1.top">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2020/09/24/ctf_show上web入门web23的wp/">ctf_show上web入门web23的wp</a>
+      </li>
+    
+      <li>
+        <a href="/2020/05/12/sql约束攻击/">sql约束攻击</a>
+      </li>
+    
+      <li>
+        <a href="/2019/12/26/xss总结/">xss总结</a>
+      </li>
+    
+      <li>
+        <a href="/2019/12/02/python教程/">python3教程</a>
+      </li>
+    
+      <li>
+        <a href="/2019/11/16/python爬虫之免费收短信/">python爬虫之免费收短信</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">Tags</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/CTF-内存取证/">-CTF -内存取证</a><small>1</small></li>
+  
+    <li><a href="/tags/CVE-CVE-2019-0708-Windows远程桌面命令执行漏洞/">-CVE -CVE-2019-0708 -Windows远程桌面命令执行漏洞</a><small>1</small></li>
+  
+    <li><a href="/tags/python-爬虫/">-python -爬虫</a><small>1</small></li>
+  
+    <li><a href="/tags/二进制学习-裸函数/">-二进制学习 -裸函数</a><small>1</small></li>
+  
+    <li><a href="/tags/CTF/">CTF</a><small>2</small></li>
+  
+    <li><a href="/tags/access/">access</a><small>1</small></li>
+  
+    <li><a href="/tags/c/">c++</a><small>5</small></li>
+  
+    <li><a href="/tags/ctf/">ctf</a><small>3</small></li>
+  
+    <li><a href="/tags/mysql/">mysql</a><small>8</small></li>
+  
+    <li><a href="/tags/node-js/">node.js</a><small>1</small></li>
+  
+    <li><a href="/tags/php/">php</a><small>2</small></li>
+  
+    <li><a href="/tags/phpstudy/">phpstudy</a><small>1</small></li>
+  
+    <li><a href="/tags/php反序列化漏洞/">php反序列化漏洞</a><small>1</small></li>
+  
+    <li><a href="/tags/pwn/">pwn</a><small>1</small></li>
+  
+    <li><a href="/tags/python/">python</a><small>2</small></li>
+  
+    <li><a href="/tags/sql注入/">sql注入</a><small>9</small></li>
+  
+    <li><a href="/tags/ssh/">ssh</a><small>1</small></li>
+  
+    <li><a href="/tags/ssrf/">ssrf</a><small>1</small></li>
+  
+    <li><a href="/tags/vc6-0/">vc6.0</a><small>1</small></li>
+  
+    <li><a href="/tags/vps/">vps</a><small>1</small></li>
+  
+    <li><a href="/tags/web-靶机/">web-靶机</a><small>2</small></li>
+  
+    <li><a href="/tags/web-sql-injection/">web_sql_injection</a><small>1</small></li>
+  
+    <li><a href="/tags/web-upload-include/">web_upload_include</a><small>1</small></li>
+  
+    <li><a href="/tags/web安全/">web安全</a><small>12</small></li>
+  
+    <li><a href="/tags/web漏洞/">web漏洞</a><small>1</small></li>
+  
+    <li><a href="/tags/xxe/">xxe</a><small>2</small></li>
+  
+    <li><a href="/tags/二进制安全/">二进制安全</a><small>1</small></li>
+  
+    <li><a href="/tags/关于我/">关于我</a><small>1</small></li>
+  
+    <li><a href="/tags/内网渗透/">内网渗透</a><small>1</small></li>
+  
+    <li><a href="/tags/博客/">博客</a><small>1</small></li>
+  
+    <li><a href="/tags/变量覆盖/">变量覆盖</a><small>1</small></li>
+  
+    <li><a href="/tags/导航/">导航</a><small>1</small></li>
+  
+    <li><a href="/tags/支付漏洞/">支付漏洞</a><small>1</small></li>
+  
+    <li><a href="/tags/数据结构/">数据结构</a><small>2</small></li>
+  
+    <li><a href="/tags/文件上传/">文件上传</a><small>1</small></li>
+  
+    <li><a href="/tags/文件包含漏洞/">文件包含漏洞</a><small>1</small></li>
+  
+    <li><a href="/tags/栈/">栈</a><small>1</small></li>
+  
+    <li><a href="/tags/爆破/">爆破</a><small>1</small></li>
+  
+    <li><a href="/tags/私有云/">私有云</a><small>1</small></li>
+  
+    <li><a href="/tags/竞赛/">竞赛</a><small>1</small></li>
+  
+    <li><a href="/tags/脚本/">脚本</a><small>1</small></li>
+  
+    <li><a href="/tags/逻辑漏洞/">逻辑漏洞</a><small>1</small></li>
+  
+    <li><a href="/tags/队列/">队列</a><small>1</small></li>
+  
+    <li><a href="/tags/靶机/">靶机</a><small>1</small></li>
+  
+    <li><a href="/tags/靶机渗透/">靶机渗透</a><small>2</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">Tag Cloud</h3>
+  <div class="entry">
+    <a href="/tags/CTF-内存取证/" style="font-size: 10px;">-CTF -内存取证</a> <a href="/tags/CVE-CVE-2019-0708-Windows远程桌面命令执行漏洞/" style="font-size: 10px;">-CVE -CVE-2019-0708 -Windows远程桌面命令执行漏洞</a> <a href="/tags/python-爬虫/" style="font-size: 10px;">-python -爬虫</a> <a href="/tags/二进制学习-裸函数/" style="font-size: 10px;">-二进制学习 -裸函数</a> <a href="/tags/CTF/" style="font-size: 11.67px;">CTF</a> <a href="/tags/access/" style="font-size: 10px;">access</a> <a href="/tags/c/" style="font-size: 15px;">c++</a> <a href="/tags/ctf/" style="font-size: 13.33px;">ctf</a> <a href="/tags/mysql/" style="font-size: 16.67px;">mysql</a> <a href="/tags/node-js/" style="font-size: 10px;">node.js</a> <a href="/tags/php/" style="font-size: 11.67px;">php</a> <a href="/tags/phpstudy/" style="font-size: 10px;">phpstudy</a> <a href="/tags/php反序列化漏洞/" style="font-size: 10px;">php反序列化漏洞</a> <a href="/tags/pwn/" style="font-size: 10px;">pwn</a> <a href="/tags/python/" style="font-size: 11.67px;">python</a> <a href="/tags/sql注入/" style="font-size: 18.33px;">sql注入</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/ssrf/" style="font-size: 10px;">ssrf</a> <a href="/tags/vc6-0/" style="font-size: 10px;">vc6.0</a> <a href="/tags/vps/" style="font-size: 10px;">vps</a> <a href="/tags/web-靶机/" style="font-size: 11.67px;">web-靶机</a> <a href="/tags/web-sql-injection/" style="font-size: 10px;">web_sql_injection</a> <a href="/tags/web-upload-include/" style="font-size: 10px;">web_upload_include</a> <a href="/tags/web安全/" style="font-size: 20px;">web安全</a> <a href="/tags/web漏洞/" style="font-size: 10px;">web漏洞</a> <a href="/tags/xxe/" style="font-size: 11.67px;">xxe</a> <a href="/tags/二进制安全/" style="font-size: 10px;">二进制安全</a> <a href="/tags/关于我/" style="font-size: 10px;">关于我</a> <a href="/tags/内网渗透/" style="font-size: 10px;">内网渗透</a> <a href="/tags/博客/" style="font-size: 10px;">博客</a> <a href="/tags/变量覆盖/" style="font-size: 10px;">变量覆盖</a> <a href="/tags/导航/" style="font-size: 10px;">导航</a> <a href="/tags/支付漏洞/" style="font-size: 10px;">支付漏洞</a> <a href="/tags/数据结构/" style="font-size: 11.67px;">数据结构</a> <a href="/tags/文件上传/" style="font-size: 10px;">文件上传</a> <a href="/tags/文件包含漏洞/" style="font-size: 10px;">文件包含漏洞</a> <a href="/tags/栈/" style="font-size: 10px;">栈</a> <a href="/tags/爆破/" style="font-size: 10px;">爆破</a> <a href="/tags/私有云/" style="font-size: 10px;">私有云</a> <a href="/tags/竞赛/" style="font-size: 10px;">竞赛</a> <a href="/tags/脚本/" style="font-size: 10px;">脚本</a> <a href="/tags/逻辑漏洞/" style="font-size: 10px;">逻辑漏洞</a> <a href="/tags/队列/" style="font-size: 10px;">队列</a> <a href="/tags/靶机/" style="font-size: 10px;">靶机</a> <a href="/tags/靶机渗透/" style="font-size: 11.67px;">靶机渗透</a>
+  </div>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  <p>
+  
+  &copy; 2020 ambb1
+  
+  All rights reserved.</p>
+  <p>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></p>
+</div>
+<div class="clearfix"></div>
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<div id="bg"></div>
+</body>
+</html>
